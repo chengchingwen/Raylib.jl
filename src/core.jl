@@ -12,3 +12,9 @@ function UpdateCamera(camera::RayCamera3D)
 
     return new_camera_ref[]
 end
+
+function GetDroppedFiles()
+    count = Ref{Cint}(0)
+    fptrs = GetDroppedFiles(count)
+    return Base.unsafe_wrap(Vector{String}, fptrs, count[])
+end

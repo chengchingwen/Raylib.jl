@@ -5,12 +5,13 @@ end
 "type string => (c return type, c argument type, julia argument type [, julia return type])"
 const typemap_dict = Dict{String, Any}(
     "void"            => (:Cvoid, :Cvoid, :Nothing),
+    "char"            => (:Cchar, :Cchar, :Char),
     "int"             => (:Cint, :Cint, :Integer),
     "long"            => (:Clong, :Clong, :Integer),
     "float"           => (:Cfloat, :Cfloat, :Real),
     "double"          => (:Cdouble, :Cdouble, :Real),
     "unsigned char"   => (:Cuchar, :Cuchar, :UInt8),
-    "const char *"    => (:Cstring, :Cstring, :String, :String),
+    "char **"         => (:(Ptr{Cstring}), :(Ptr{Cstring}), :(Ref{String}), :(Ref{String})),
     "char *"          => (:Cstring, :Cstring, :String, :String),
     "bool"            => (:Cuchar, :Cuchar, :Bool, :Bool),
     "unsigned int"    => (:Cuint, :Cuint, :Integer),
@@ -66,27 +67,36 @@ function typemap(type, case=:julia)
     haskey(typemap_dict, ptr_type) || return nothing
 
     type_sym = default_get(typemap_dict[ptr_type], caseid)
-    return caseid == 1 ? :(Ptr{$type_sym}) : :(Ref{$type_sym})
+
+    if !isabstracttype(eval(type_sym))
+        return caseid == 1 ? :(Ptr{$type_sym}) : :(Ref{$type_sym})
+    else
+        return caseid == 1 ? :(Ptr{<:$type_sym}) : :(Ref{<:$type_sym})
+    end
 end
 
 jl_type_handler(_, ex) = ex
 jl_type_handler(x::Symbol, ex) = jl_type_handler(eval(x), ex)
 jl_type_handler(::Type{String}, ex) = :(Base.unsafe_string($ex))
 
+maybe(f, x) = f(x)
+maybe(f, ::Nothing) = nothing
+maybe(f) = Base.Fix1(maybe, f)
+
 function parse_declaration(declaration, source=nothing)
     global typemap
     declaration = strip(declaration)
-    m = match(r"^([^,]+[* ])([^* ]+)\(([^\)]*)\);\s*//(.*)", declaration)
+    m = match(r"^(const)?([^,]+[* ])([^* ]+)\(([^\)]*)\);\s*(//)?(.*)?", declaration)
     if isnothing(m)
-        @info "not a correct c function declaration, skiped:\n$declaration"
+        @debug "not a correct c function declaration, skiped:\n$declaration"
         return nothing
     end
 
-    ret_type_s, func_name_s, func_args_s, comment = map(strip, m.captures)
+    _, ret_type_s, func_name_s, func_args_s, _, comment = map(maybe(strip), m.captures)
 
     ret_type = typemap(ret_type_s, :return)
     if isnothing(ret_type)
-        @info "unknown return type <$ret_type_s>, skiped:\n$declaration"
+        @debug "unknown return type <$ret_type_s>, skiped:\n$declaration"
         return nothing
     end
 
@@ -98,19 +108,19 @@ function parse_declaration(declaration, source=nothing)
         jl_args = Expr[]
     else
         arg_num = count(isequal(','), func_args_s) + 1
-        args_m = collect(eachmatch(r"([^,]+[* ])([^ *,]+)", func_args_s))
+        args_m = collect(eachmatch(r" *(const)?([^,]+[* ])([^ *,]+)", func_args_s))
         if arg_num != length(args_m)
-            @info "problem while parsing function args <$func_args_s>, skiped:\n$declaration"
+            @debug "problem while parsing function args <$func_args_s>, skiped:\n$declaration"
             return nothing
         end
 
         c_args = Vector{Expr}(undef, arg_num)
         jl_args = Vector{Expr}(undef, arg_num)
         for i = 1:arg_num
-            arg_type_s, arg_name_s = map(strip, args_m[i].captures)
+            _, arg_type_s, arg_name_s = map(maybe(strip), args_m[i].captures)
             arg_type = typemap(arg_type_s, :argument)
             if isnothing(arg_type)
-                @info "unknown $i-th argument type <$arg_type_s>, skiped:\n$declaration"
+                @debug "unknown $i-th argument type <$arg_type_s>, skiped:\n$declaration"
                 return nothing
             end
 
