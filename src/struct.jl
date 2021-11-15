@@ -61,15 +61,22 @@ struct RayNPatchInfo
     layout::Cint             # Layout of the n-patch: 3x3, 1x3 or 3x1
 end
 
-# struct GlyphInfo
-#    value::Cint              # Character value (Unicode)
-#    offsetX::Cint            # Character offset X when drawing
-#    offsetY::Cint            # Character offset Y when drawing
-#    advanceX::Cint           # Character advance position X
-#    #Image image::Cint            # Character image data
-# end
+struct RayGlyphInfo
+   value::Cint              # Character value (Unicode)
+   offsetX::Cint            # Character offset X when drawing
+   offsetY::Cint            # Character offset Y when drawing
+   advanceX::Cint           # Character advance position X
+   image::RayImage          # Character image data
+end
 
-# struct Font -> GlyphInfo
+struct RayFont
+    baseSize::Cint                 # Base size (default chars height)
+    glyphCount::Cint               # Number of glyph characters
+    glyphPadding::Cint             # Padding around the glyph characters
+    texture::RayTexture            # Texture atlas containing the glyphs
+    recs::Ptr{RayRectangle}        # Rectangles in texture for the glyphs
+    glyphs::Ptr{RayGlyphInfo}      # Glyphs info data
+end
 
 # struct Mesh
 #     vertexCount::Cint        # Number of vertices stored in arrays
