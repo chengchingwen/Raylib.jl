@@ -5,7 +5,7 @@ using Raylib: RayCamera3D, rayvector,
 function main()
     screenWidth = 800
     screenHeight = 450
-    
+
     Raylib.InitWindow(screenWidth, screenHeight,
                       "raylib [core] example - 3d camera mode")
 
@@ -21,13 +21,13 @@ function main()
 
     Raylib.SetTargetFPS(60)
 
-    while iszero(Raylib.WindowShouldClose())
+    while !Raylib.WindowShouldClose()
         Raylib.BeginDrawing()
         Raylib.ClearBackground(RAYWHITE)
 
         Raylib.BeginMode3D(camera)
         Raylib.DrawCube(cubePosition, 2f0, 2f0, 2f0, RED)
-        
+
         Raylib.DrawCubeWires(cubePosition, 2f0, 2f0, 2f0, MAROON)
 
         Raylib.DrawGrid(10, 1f0)
