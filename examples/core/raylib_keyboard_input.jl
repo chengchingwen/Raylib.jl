@@ -12,7 +12,7 @@ function main()
     ballPosition = Raylib.rayvector(screenWidth/2, screenHeight/2)
 
     Raylib.SetTargetFPS(60)
-    while iszero(Raylib.WindowShouldClose())    # Detect window close button or ESC key
+    while !Raylib.WindowShouldClose()    # Detect window close button or ESC key
         # update
         if Raylib.IsKeyDown(Int(Raylib.KEY_RIGHT))
             ballPosition = Raylib.rayvector(ballPosition[1]+2, ballPosition[2])

@@ -26,6 +26,5 @@ function main()
         Raylib.EndDrawing()
     end
 
-
     Raylib.CloseWindow()
 end
