@@ -13,7 +13,7 @@ const typemap_dict = Dict{String, Any}(
     "char *"          => (:Cstring, :Cstring, :String, :String),
     "bool"            => (:Cint, :Cint, :Bool, :Bool),
     "unsigned int"    => (:Cuint, :Cuint, :Integer),
-    "Color"           => (:RayColor, :RayColor, :RayColor),
+    "Color"           => :RayColor,
     "Camera"          => :RayCamera3D,
     "Camera3D"        => :RayCamera3D,
     "Camera2D"        => :RayCamera2D,
@@ -44,7 +44,7 @@ function typemap(type, case=:julia)
     haskey(typemap_dict, ptr_type) || return nothing
 
     type_sym = default_get(typemap_dict[ptr_type], caseid)
-    return caseid == 1 ? :(Ptr{$type_sym}) : :(Ref{$type_sym})
+    return :(Ptr{$type_sym})
 end
 
 jl_type_handler(_, ex) = ex
