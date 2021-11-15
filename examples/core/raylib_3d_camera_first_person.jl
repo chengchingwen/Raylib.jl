@@ -7,16 +7,18 @@ function main()
     screenWidth = 800
     screenHeight = 450
 
-    Raylib.InitWindow(screenWidth, screenHeight,
-                      "raylib [core] example - 3d camera first person")
+    Raylib.InitWindow(
+        screenWidth, screenHeight,
+        "raylib [core] example - 3d camera first person"
+    )
 
-    camera = Ref(RayCamera3D(
+    camera = RayCamera3D(
         rayvector(4, 2, 4),
         rayvector(0, 1.8, 0),
         rayvector(0, 1, 0),
         60,
         0,
-    ))
+    )
 
     heights = Vector{Cfloat}(undef, 20)
     positions = Vector{RayVector3}(undef, 20)
@@ -37,16 +39,16 @@ function main()
         )
     end
 
-    Raylib.SetCameraMode(camera[], 3)
+    Raylib.SetCameraMode(camera, 3)
     Raylib.SetTargetFPS(60)
 
     while !Raylib.WindowShouldClose()
-        Raylib.UpdateCamera(camera)
+        camera = Raylib.UpdateCamera(camera)
 
         Raylib.BeginDrawing()
         Raylib.ClearBackground(RAYWHITE)
 
-        Raylib.BeginMode3D(camera[])
+        Raylib.BeginMode3D(camera)
 
         Raylib.DrawPlane(
             rayvector(0,0,0),
