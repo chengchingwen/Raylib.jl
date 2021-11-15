@@ -4,42 +4,51 @@ end
 
 "type string => (c return type, c argument type, julia argument type [, julia return type])"
 const typemap_dict = Dict{String, Any}(
-    "void"            => (Cvoid, Cvoid, Nothing),
-    "int"             => (Cint, Cint, Integer),
-    "long"            => (Clong, Clong, Integer),
-    "float"           => (Cfloat, Cfloat, Real),
-    "double"          => (Cdouble, Cdouble, Real),
-    "const char *"    => (Cstring, Cstring, String, String),
-    "char *"          => (Cstring, Cstring, String, String),
-    "bool"            => (Cint, Cint, Bool, Bool),
-    "unsigned int"    => (Cuint, Cuint, Integer),
-    "Color"           => (RayColor, RayColor, RayColor),
-    "Camera"          => (RayCamera3D, RayCamera3D, RayCamera3D),
-    "Camera3D"        => (RayCamera3D, RayCamera3D, RayCamera3D),
-    "Camera2D"        => (RayCamera2D, RayCamera2D, RayCamera2D),
-    "Vector2"         => ((NTuple{2, Cfloat}), (NTuple{2, Cfloat}), RayVector2),
-    "Vector3"         => ((NTuple{3, Cfloat}), (NTuple{3, Cfloat}), RayVector3),
-    "Vector4"         => ((NTuple{4, Cfloat}), (NTuple{4, Cfloat}), RayVector4),
+    "void"            => (:Cvoid, :Cvoid, :Nothing),
+    "int"             => (:Cint, :Cint, :Integer),
+    "long"            => (:Clong, :Clong, :Integer),
+    "float"           => (:Cfloat, :Cfloat, :Real),
+    "double"          => (:Cdouble, :Cdouble, :Real),
+    "const char *"    => (:Cstring, :Cstring, :String, :String),
+    "char *"          => (:Cstring, :Cstring, :String, :String),
+    "bool"            => (:Cint, :Cint, :Bool, :Bool),
+    "unsigned int"    => (:Cuint, :Cuint, :Integer),
+    "Color"           => (:RayColor, :RayColor, :RayColor),
+    "Camera"          => :RayCamera3D,
+    "Camera3D"        => :RayCamera3D,
+    "Camera2D"        => :RayCamera2D,
+    "Rectangle"       => :RayRectangle,
+    "Texture"         => :RayTexture,
+    "Texture2D"       => :RayTexture,
+    "TextureCubemap"  => :RayTexture,
+    "RenderTexture"   => :RayRenderTexture,
+    "RenderTexture2D" => :RayRenderTexture,
+    "NPatchInfo"      => :RayNPatchInfo,
+    "Vector2"         => (:(NTuple{2, Cfloat}), :(NTuple{2, Cfloat}), :RayVector2),
+    "Vector3"         => (:(NTuple{3, Cfloat}), :(NTuple{3, Cfloat}), :RayVector3),
+    "Vector4"         => (:(NTuple{4, Cfloat}), :(NTuple{4, Cfloat}), :RayVector4),
 )
 
-default_get(x::Tuple, i, y=nothing) = 1 <= i <= length(x) ? x[i] : y
+default_get(x::Tuple, i, y=x[3]) = 1 <= i <= length(x) ? x[i] : y
+default_get(x, i, _...) = x
 
 function typemap(type, case=:julia)
     global typemap_dict
     caseid = case == :return ? 1 : case == :argument ? 2 : case == :julia ? 3 : 4 #error("unknown case: $case")
 
-    haskey(typemap_dict, type) && return default_get(typemap_dict[type], caseid)
+    haskey(typemap_dict, type) && return default_get(typemap_dict[type], caseid, nothing)
 
     ptr_type = strip(x->isspace(x) || isequal('*', x), type)
 
     type == ptr_type && return nothing
     haskey(typemap_dict, ptr_type) || return nothing
 
-    type_sym = default_get(typemap_dict[ptr_type], caseid, typemap_dict[ptr_type][3])
+    type_sym = default_get(typemap_dict[ptr_type], caseid)
     return caseid == 1 ? :(Ptr{$type_sym}) : :(Ref{$type_sym})
 end
 
-jl_type_handler(x, ex) = ex
+jl_type_handler(_, ex) = ex
+jl_type_handler(x::Symbol, ex) = jl_type_handler(eval(x), ex)
 jl_type_handler(::Type{String}, ex) = :(Base.unsafe_string($ex))
 
 function parse_declaration(declaration, source=nothing)
