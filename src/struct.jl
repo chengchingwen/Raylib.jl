@@ -7,6 +7,8 @@ rayvector(v::Vararg{<:Real, 2}) = RayVector2(v)
 rayvector(v::Vararg{<:Real, 3}) = RayVector3(v)
 rayvector(v::Vararg{<:Real, 4}) = RayVector4(v)
 
+const RayMatrix = NTuple{16, Cfloat}
+
 struct RayCamera3D
     position::RayVector3  # Camera position
     target::RayVector3    # Camera target it looks-at
@@ -128,4 +130,99 @@ end
 struct RayBoneInfo
     name::NTuple{32, Cchar}          # Bone name
     parent::Cint                     # Bone parent
+end
+
+struct RayModel
+    transform::RayMatrix              # Local transform matrix
+
+    meshCount::Cint                   # Number of meshes
+    materialCount::Cint               # Number of materials
+    meshes::Ptr{RayMesh}              # Meshes array
+    materials::Ptr{RayMaterial}       # Materials array
+    meshMaterial::Ptr{Cint}           # Mesh material number
+
+    # Animation data
+    boneCount::Cint                   # Number of bones
+    bones::Ptr{RayBoneInfo}           # Bones information (skeleton)
+    bindPose::Ptr{RayTransform}       # Bones base transformation (pose)
+end
+
+struct RayModelAnimation
+    boneCount::Cint                # Number of bones
+    frameCount::Cint               # Number of animation frames
+    bones::Ptr{RayBoneInfo}        # Bones information (skeleton)
+    # Transform **framePoses        # Poses array by frame
+    framePoses::Ptr{Ptr{RayTransform}}        # Poses array by frame
+end
+
+struct Ray
+    position::RayVector3        # Ray position (origin)
+    direction::RayVector3       # Ray direction
+end
+
+struct RayCollision
+    hit::Bool                  # Did the ray hit something?
+    distance::Cfloat           # Distance to nearest hit
+    point::RayVector3          # Point of nearest hit
+    normal::RayVector3         # Surface normal of hit
+end
+
+struct RayBoundingBox
+    min::RayVector3     # Minimum vertex box-corner
+    max::RayVector3     # Maximum vertex box-corner
+end
+
+struct RayWave
+    frameCount::Cuint      # Total number of frames (considering channels)
+    sampleRate::Cuint      # Frequency (samples per second)
+    sampleSize::Cuint      # Bit depth (bits per sample): 8, 16, 32 (24 not supported)
+    channels::Cuint        # Number of channels (1-mono, 2-stereo, ...)
+    data::Ptr{Cvoid}       # Buffer data pointer
+end
+
+struct RayAudioStream
+    # rAudioBuffer *buffer;       // Pointer to internal data used by the audio system
+    buffer::Ptr{Cvoid}
+
+    sampleRate::Cuint    # Frequency (samples per second)
+    sampleSize::Cuint    # Bit depth (bits per sample): 8, 16, 32 (24 not supported)
+    channels::Cuint      # Number of channels (1-mono, 2-stereo, ...)
+end
+
+struct RaySound
+    stream::RayAudioStream         # Audio stream
+    frameCount::Cuint              # Total number of frames (considering channels)
+end
+
+struct RayMusic
+    stream::RayAudioStream        # Audio stream
+    frameCount::Cuint             # Total number of frames (considering channels)
+    looping::Bool                 # Music looping enable
+
+    ctxType::Cint                 # Type of music context (audio filetype)
+    ctxData::Ptr{Cvoid}           # Audio context data, depends on type
+end
+
+struct RayVrDeviceInfo
+    hResolution::Cint                        # Horizontal resolution in pixels
+    vResolution::Cint                        # Vertical resolution in pixels
+    hScreenSize::Cfloat                      # Horizontal size in meters
+    vScreenSize::Cfloat                      # Vertical size in meters
+    vScreenCenter::Cfloat                    # Screen center in meters
+    eyeToScreenDistance::Cfloat              # Distance between eye and display in meters
+    lensSeparationDistance::Cfloat           # Lens separation distance in meters
+    interpupillaryDistance::Cfloat           # IPD (distance between pupils) in meters
+    lensDistortionValues::NTuple{4, Cfloat}  # Lens distortion constant parameters
+    chromaAbCorrection::NTuple{4, Cfloat}    # Chromatic aberration correction parameters
+end
+
+struct RayVrStereoConfig
+    projection::NTuple{2, RayMatrix}           # VR projection matrices (per eye)
+    viewOffset::NTuple{2, RayMatrix}           # VR view offset matrices (per eye)
+    leftLensCenter::NTuple{2, Cfloat}          # VR left lens center
+    rightLensCenter::NTuple{2, Cfloat}         # VR right lens center
+    leftScreenCenter::NTuple{2, Cfloat}        # VR left screen center
+    rightScreenCenter::NTuple{2, Cfloat}       # VR right screen center
+    scale::NTuple{2, Cfloat}                   # VR distortion scale
+    scaleIn::NTuple{2, Cfloat}                 # VR distortion scale in
 end
