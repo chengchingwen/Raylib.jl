@@ -30,7 +30,13 @@ struct RayRectangle
     height::Cfloat   # Rectangle height
 end
 
-# struct Image
+struct RayImage
+    data::Ptr{Cvoid}         # Image raw data
+    width::Cint              # Image base width
+    height::Cint             # Image base height
+    mipmaps::Cint            # Mipmap levels, 1 by default
+    format::Cint             # Data format (PixelFormat type)
+end
 
 struct RayTexture
     id::Cuint        # OpenGL texture id

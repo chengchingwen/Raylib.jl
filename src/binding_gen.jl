@@ -24,6 +24,7 @@ const typemap_dict = Dict{String, Any}(
     "RenderTexture"   => :RayRenderTexture,
     "RenderTexture2D" => :RayRenderTexture,
     "NPatchInfo"      => :RayNPatchInfo,
+    "Image"           => :RayImage,
     "Vector2"         => (:(NTuple{2, Cfloat}), :(NTuple{2, Cfloat}), :RayVector2),
     "Vector3"         => (:(NTuple{3, Cfloat}), :(NTuple{3, Cfloat}), :RayVector3),
     "Vector4"         => (:(NTuple{4, Cfloat}), :(NTuple{4, Cfloat}), :RayVector4),
