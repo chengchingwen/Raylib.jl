@@ -1,4 +1,4 @@
-using raylib_jll
+using Raylib_jll
 
 struct RayColor
     r::Cuchar
@@ -31,7 +31,7 @@ function main()
     screenWidth = 800
     screenHeight = 450
     
-    @ccall raylib.InitWindow(screenWidth::Cint, screenHeight::Cint,
+    @ccall libraylib.InitWindow(screenWidth::Cint, screenHeight::Cint,
                              "raylib [core] example - 3d camera mode"::Cstring)::Cvoid
 
     camera = RayCamera3D(
@@ -44,27 +44,27 @@ function main()
 
     cubePosition = RayVector3(0, 0, 0)
 
-    @ccall raylib.SetTargetFPS(60::Cint)::Cvoid
+    @ccall libraylib.SetTargetFPS(60::Cint)::Cvoid
 
-    while iszero(@ccall raylib.WindowShouldClose()::Cint)
-        @ccall raylib.BeginDrawing()::Cvoid
-        @ccall raylib.ClearBackground(RAYWHITE::RayColor)::Cvoid
+    while iszero(@ccall libraylib.WindowShouldClose()::Cint)
+        @ccall libraylib.BeginDrawing()::Cvoid
+        @ccall libraylib.ClearBackground(RAYWHITE::RayColor)::Cvoid
 
-        @ccall raylib.BeginMode3D(camera::RayCamera3D)::Cvoid
-        @ccall raylib.DrawCube(cubePosition::RayVector3, 2f0::Cfloat, 2f0::Cfloat, 2f0::Cfloat,
+        @ccall libraylib.BeginMode3D(camera::RayCamera3D)::Cvoid
+        @ccall libraylib.DrawCube(cubePosition::RayVector3, 2f0::Cfloat, 2f0::Cfloat, 2f0::Cfloat,
                                RED::RayColor)::RayColor
         
-        @ccall raylib.DrawCubeWires(cubePosition::RayVector3, 2f0::Cfloat, 2f0::Cfloat, 2f0::Cfloat,
+        @ccall libraylib.DrawCubeWires(cubePosition::RayVector3, 2f0::Cfloat, 2f0::Cfloat, 2f0::Cfloat,
                                     MAROON::RayColor)::Cvoid
 
-        @ccall raylib.DrawGrid(10::Cint, 1f0::Cfloat)::Cvoid
+        @ccall libraylib.DrawGrid(10::Cint, 1f0::Cfloat)::Cvoid
 
-        @ccall raylib.EndMode3D()::Cvoid
-        @ccall raylib.DrawText("Welcome to the third dimension!"::Cstring,
+        @ccall libraylib.EndMode3D()::Cvoid
+        @ccall libraylib.DrawText("Welcome to the third dimension!"::Cstring,
                                10::Cint, 40::Cint, 20::Cint, DARKGRAY::RayColor)::Cvoid
-        @ccall raylib.EndDrawing()::Cvoid
+        @ccall libraylib.EndDrawing()::Cvoid
     end
 
-    @ccall raylib.CloseWindow()::Cvoid
+    @ccall libraylib.CloseWindow()::Cvoid
 
 end

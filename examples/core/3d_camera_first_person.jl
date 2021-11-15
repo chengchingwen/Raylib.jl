@@ -1,4 +1,4 @@
-using raylib_jll
+using Raylib_jll
 
 struct RayColor
     r::Cuchar
@@ -42,7 +42,7 @@ function main()
     screenWidth = 800
     screenHeight = 450
 
-    @ccall raylib.InitWindow(screenWidth::Cint, screenHeight::Cint,
+    @ccall libraylib.InitWindow(screenWidth::Cint, screenHeight::Cint,
                              "raylib [core] example - 3d camera first person"::Cstring)::Cvoid
 
     camera = Ref(RayCamera3D(
@@ -58,72 +58,72 @@ function main()
     colors = Vector{RayColor}(undef, 20)
 
     for i = 1:20
-        heights[i] = @ccall raylib.GetRandomValue(1::Cint, 12::Cint)::Cint
+        heights[i] = @ccall libraylib.GetRandomValue(1::Cint, 12::Cint)::Cint
         positions[i] = RayVector3(
-            @ccall(raylib.GetRandomValue((-15)::Cint, 15::Cint)::Cint),
+            @ccall(libraylib.GetRandomValue((-15)::Cint, 15::Cint)::Cint),
             heights[i] / 2,
-            @ccall(raylib.GetRandomValue((-15)::Cint, 15::Cint)::Cint),
+            @ccall(libraylib.GetRandomValue((-15)::Cint, 15::Cint)::Cint),
         )
         colors[i] = RayColor(
-            @ccall( raylib.GetRandomValue(20::Cint, 255::Cint)::Cint),
-            @ccall( raylib.GetRandomValue(10::Cint, 55::Cint)::Cint),
+            @ccall( libraylib.GetRandomValue(20::Cint, 255::Cint)::Cint),
+            @ccall( libraylib.GetRandomValue(10::Cint, 55::Cint)::Cint),
             30,
             255,
         )
     end
 
-    @ccall raylib.SetCameraMode(camera[]::RayCamera3D, 3::Cint)::Cvoid
-    @ccall raylib.SetTargetFPS(60::Cint)::Cvoid
+    @ccall libraylib.SetCameraMode(camera[]::RayCamera3D, 3::Cint)::Cvoid
+    @ccall libraylib.SetTargetFPS(60::Cint)::Cvoid
 
-    while iszero(@ccall raylib.WindowShouldClose()::Cint)
-        @ccall raylib.UpdateCamera(camera::Ref{RayCamera3D})::Cvoid
+    while iszero(@ccall libraylib.WindowShouldClose()::Cint)
+        @ccall libraylib.UpdateCamera(camera::Ref{RayCamera3D})::Cvoid
 
-        @ccall raylib.BeginDrawing()::Cvoid
-        @ccall raylib.ClearBackground(RAYWHITE::RayColor)::Cvoid
+        @ccall libraylib.BeginDrawing()::Cvoid
+        @ccall libraylib.ClearBackground(RAYWHITE::RayColor)::Cvoid
 
-        @ccall raylib.BeginMode3D(camera[]::RayCamera3D)::Cvoid
+        @ccall libraylib.BeginMode3D(camera[]::RayCamera3D)::Cvoid
 
-        @ccall raylib.DrawPlane(
+        @ccall libraylib.DrawPlane(
             RayVector3(0,0,0)::RayVector3,
             RayVector2(32, 32)::RayVector2,
             LIGHTGRAY::RayColor)::Cvoid
 
-        @ccall raylib.DrawCube(
+        @ccall libraylib.DrawCube(
             RayVector3(-16, 2.5, 0)::RayVector3, 1f0::Cfloat, 5f0::Cfloat, 32f0::Cfloat,
             BLUE::RayColor)::Cvoid
-        @ccall raylib.DrawCube(
+        @ccall libraylib.DrawCube(
             RayVector3(16, 2.5, 0)::RayVector3, 1f0::Cfloat, 5f0::Cfloat, 32f0::Cfloat,
             LIME::RayColor)::Cvoid
-        @ccall raylib.DrawCube(
+        @ccall libraylib.DrawCube(
             RayVector3(0, 2.5, 16)::RayVector3, 32f0::Cfloat, 5f0::Cfloat, 1f0::Cfloat,
             GOLD::RayColor)::Cvoid
 
 
         for i = 1:20
-            @ccall raylib.DrawCube(
+            @ccall libraylib.DrawCube(
                 positions[i]::RayVector3, 2f0::Cfloat, heights[i]::Cfloat, 2f0::Cfloat,
                 colors[i]::RayColor)::Cvoid
-            @ccall raylib.DrawCubeWires(positions[i]::RayVector3, 2f0::Cfloat, heights[i]::Cfloat, 2f0::Cfloat,
+            @ccall libraylib.DrawCubeWires(positions[i]::RayVector3, 2f0::Cfloat, heights[i]::Cfloat, 2f0::Cfloat,
                                         MAROON::RayColor)::Cvoid
 
         end
 
-        @ccall raylib.EndMode3D()::Cvoid
+        @ccall libraylib.EndMode3D()::Cvoid
 
-        @ccall raylib.DrawRectangle(10::Cint, 10::Cint, 220::Cint, 70::Cint,
-                                    @ccall( raylib.Fade(SKYBLUE::RayColor, 0.5::Cfloat)::RayColor )::RayColor)::Cvoid
-        @ccall raylib.DrawRectangleLines(10::Cint, 10::Cint, 220::Cint, 70::Cint, BLUE::RayColor)::Cvoid
+        @ccall libraylib.DrawRectangle(10::Cint, 10::Cint, 220::Cint, 70::Cint,
+                                    @ccall( libraylib.Fade(SKYBLUE::RayColor, 0.5::Cfloat)::RayColor )::RayColor)::Cvoid
+        @ccall libraylib.DrawRectangleLines(10::Cint, 10::Cint, 220::Cint, 70::Cint, BLUE::RayColor)::Cvoid
 
-        @ccall raylib.DrawText("First person camera default controls:"::Cstring,
+        @ccall libraylib.DrawText("First person camera default controls:"::Cstring,
                                20::Cint, 20::Cint, 10::Cint, BLACK::RayColor)::Cvoid
-        @ccall raylib.DrawText("- Move with keys: W, A, S, D"::Cstring,
+        @ccall libraylib.DrawText("- Move with keys: W, A, S, D"::Cstring,
                                40::Cint, 40::Cint, 10::Cint, DARKGRAY::RayColor)::Cvoid
-        @ccall raylib.DrawText("- Mouse move to look around"::Cstring,
+        @ccall libraylib.DrawText("- Mouse move to look around"::Cstring,
                                40::Cint, 60::Cint, 10::Cint, DARKGRAY::RayColor)::Cvoid
 
-        @ccall raylib.EndDrawing()::Cvoid
+        @ccall libraylib.EndDrawing()::Cvoid
     end
 
-    @ccall raylib.CloseWindow()::Cvoid
+    @ccall libraylib.CloseWindow()::Cvoid
 
 end
