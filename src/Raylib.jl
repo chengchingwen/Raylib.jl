@@ -4,8 +4,8 @@ using Raylib_jll
 using CEnum
 
 include("./enum.jl")
-include("./struct.jl")
 include("./color.jl")
+include("./struct.jl")
 include("./binding_gen.jl")
 include("./core.jl")
 include("./shapes.jl")
