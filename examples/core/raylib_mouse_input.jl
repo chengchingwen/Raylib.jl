@@ -12,7 +12,7 @@ function main()
     ballColor = Raylib.DARKBLUE
 
     Raylib.SetTargetFPS(60)
-    while iszero(Raylib.WindowShouldClose())    # Detect window close button or ESC key
+    while !Raylib.WindowShouldClose()    # Detect window close button or ESC key
         ballPosition = Raylib.GetMousePosition()
 
         # update
