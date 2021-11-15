@@ -9,9 +9,10 @@ const typemap_dict = Dict{String, Any}(
     "long"            => (:Clong, :Clong, :Integer),
     "float"           => (:Cfloat, :Cfloat, :Real),
     "double"          => (:Cdouble, :Cdouble, :Real),
+    "unsigned char"   => (:Cuchar, :Cuchar, :UInt8),
     "const char *"    => (:Cstring, :Cstring, :String, :String),
     "char *"          => (:Cstring, :Cstring, :String, :String),
-    "bool"            => (:Cint, :Cint, :Bool, :Bool),
+    "bool"            => (:Cuchar, :Cuchar, :Bool, :Bool),
     "unsigned int"    => (:Cuint, :Cuint, :Integer),
     "Color"           => :RayColor,
     "Camera"          => :RayCamera3D,
@@ -71,7 +72,6 @@ end
 jl_type_handler(_, ex) = ex
 jl_type_handler(x::Symbol, ex) = jl_type_handler(eval(x), ex)
 jl_type_handler(::Type{String}, ex) = :(Base.unsafe_string($ex))
-jl_type_handler(::Type{Bool}, ex) = :(!iszero($ex))
 
 function parse_declaration(declaration, source=nothing)
     global typemap
