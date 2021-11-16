@@ -350,7 +350,7 @@ function main()
         Raylib.DrawText("- Mouse Wheel to Zoom in-out, R to reset zoom", 40, 80, 10, Raylib.DARKGRAY);
         Raylib.DrawText("- C to change camera mode", 40, 100, 10, Raylib.DARKGRAY);
         Raylib.DrawText("Current camera mode:", 20, 120, 10, Raylib.BLACK);
-        # DrawText(cameraDescriptions[cameraOption], 40, 140, 10, DARKGRAY);
+        Raylib.DrawText(cameraDescriptions[cameraOption], 40, 140, 10, Raylib.DARKGRAY);
 
         Raylib.EndDrawing()
     end
