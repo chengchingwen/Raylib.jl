@@ -9,6 +9,9 @@ Colors = "5ae59095-9a9b-59fe-a467-6f913c188581"
 Raylib_jll = "f9cae4b5-603c-5a13-b73f-1dfe71482639"
 
 [compat]
+CEnum = "0.4"
+Colors = "0.12"
+Raylib_jll = "4.0"
 julia = "1.6"
 
 [extras]
