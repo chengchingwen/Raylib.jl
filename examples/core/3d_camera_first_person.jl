@@ -92,5 +92,4 @@ function main()
     end
 
     Raylib.CloseWindow()
-
 end
