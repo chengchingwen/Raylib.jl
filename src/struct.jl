@@ -1,13 +1,16 @@
-const RayVector2 = NTuple{2, Cfloat}
-const RayVector3 = NTuple{3, Cfloat}
-const RayVector4 = NTuple{4, Cfloat}
+using StaticArrays
+
+const RayVector2 = SVector{2, Cfloat}
+const RayVector3 = SVector{3, Cfloat}
+const RayVector4 = SVector{4, Cfloat}
+
 const RayQuaternion = RayVector4
 
 rayvector(v::Vararg{<:Real, 2}) = RayVector2(v)
 rayvector(v::Vararg{<:Real, 3}) = RayVector3(v)
 rayvector(v::Vararg{<:Real, 4}) = RayVector4(v)
 
-const RayMatrix = NTuple{16, Cfloat}
+const RayMatrix = SMatrix{4, 4, Cfloat, 16}
 
 struct RayCamera3D
     position::RayVector3  # Camera position

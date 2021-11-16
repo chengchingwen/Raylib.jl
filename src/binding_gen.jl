@@ -46,10 +46,10 @@ const typemap_dict = Dict{String, Any}(
     "Music"           => :RayMusic,
     "VrDeviceInfo"    => :RayVrDeviceInfo,
     "VrStereoConfig"  => :RayVrStereoConfig,
-    "Matrix"          => (:(NTuple{16, Cfloat}), :(NTuple{16, Cfloat}), :RayMatrix),
-    "Vector2"         => (:(NTuple{2, Cfloat}), :(NTuple{2, Cfloat}), :RayVector2),
-    "Vector3"         => (:(NTuple{3, Cfloat}), :(NTuple{3, Cfloat}), :RayVector3),
-    "Vector4"         => (:(NTuple{4, Cfloat}), :(NTuple{4, Cfloat}), :RayVector4),
+    "Matrix"          => :RayMatrix,
+    "Vector2"         => :RayVector2,
+    "Vector3"         => :RayVector3,
+    "Vector4"         => :RayVector4,
 )
 
 default_get(x::Tuple, i, y=x[3]) = 1 <= i <= length(x) ? x[i] : y
