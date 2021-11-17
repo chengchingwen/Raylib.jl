@@ -1,11 +1,9 @@
 const core_api_file = joinpath(dirname(@__DIR__), "api_reference/core.txt")
 
-
 for line in eachline(core_api_file)
     (startswith(strip(line), "//") || isempty(line)) && continue
     @eval @declaration_str $line
 end
-
 
 """
     UpdateCamera(camera::RayCamera3D)
@@ -41,7 +39,6 @@ function GetDroppedFiles()
     fcstr = Base.unsafe_wrap(Vector{Cstring}, fptrs, count[])
     return map(Base.unsafe_string, fcstr)
 end
-
 
 for func in :(
     IsKeyDown, IsKeyPressed, IsKeyReleased, IsKeyUp
