@@ -1,11 +1,9 @@
 const core_api_file = joinpath(dirname(@__DIR__), "api_reference/core.txt")
 
-
 for line in eachline(core_api_file)
     (startswith(strip(line), "//") || isempty(line)) && continue
     @eval @declaration_str $line
 end
-
 
 """
     UpdateCamera(camera::RayCamera3D)
@@ -42,7 +40,6 @@ function GetDroppedFiles()
     return map(Base.unsafe_string, fcstr)
 end
 
-
 """
     RayFileData(filename::AbstractString)
 
@@ -66,6 +63,7 @@ end
 
 Base.length(fdata::RayFileData) = length(fdata.data)
 Base.pointer(fdata::RayFileData) = pointer(fdata.data)
+
 
 for func in :(
     IsKeyDown, IsKeyPressed, IsKeyReleased, IsKeyUp
