@@ -43,6 +43,30 @@ function GetDroppedFiles()
 end
 
 
+"""
+    RayFileData(filename::AbstractString)
+
+Read the file data. It will be auto-unloaded when being garbage collected.
+"""
+struct RayFileData
+    data::Vector{UInt8}
+
+    function RayFileData(filename::AbstractString)
+        bytes = Ref{Cuint}(0)
+        dptr = LoadFileData(filename, bytes)
+        fdata = Base.unsafe_wrap(Vector{UInt8}, dptr, bytes[])
+        finalizer(fdata) do x
+            ptr = pointer(x)
+            UnloadFileData(ptr)
+        end
+
+        return new(fdata)
+    end
+end
+
+Base.length(fdata::RayFileData) = length(fdata.data)
+Base.pointer(fdata::RayFileData) = pointer(fdata.data)
+
 for func in :(
     IsKeyDown, IsKeyPressed, IsKeyReleased, IsKeyUp
 ).args

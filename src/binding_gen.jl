@@ -20,6 +20,7 @@ const typemap_dict = Dict{String, Any}(
     "Camera3D"        => :RayCamera3D,
     "Camera2D"        => :RayCamera2D,
     "Rectangle"       => :RayRectangle,
+    "Rectangle **"    => (:(Ptr{Ptr{RayRectangle}}), :(Ptr{Ptr{RayRectangle}}), :(Ref{Ptr{RayRectangle}}), :(Ref{Ptr{RayRectangle}})),
     "Texture"         => :RayTexture,
     "Texture2D"       => :RayTexture,
     "TextureCubemap"  => :RayTexture,
