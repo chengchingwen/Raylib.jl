@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="Windows-1252" ?>
+<raylibAPI>
+    <Structs count="0">
+    </Structs>
+    <Enums count="0">
+    </Enums>
+    <Functions count="28">
+        <Function name="EaseLinearNone" retType="float" paramCount="4" desc="+ b); }">
+            <Param type="float" name="t" desc="" />
+            <Param type="float" name="b" desc="" />
+            <Param type="float" name="c" desc="" />
+            <Param type="float" name="d" desc="" />
+        </Function>
+        <Function name="EaseLinearIn" retType="float" paramCount="4" desc="+ b); }">
+            <Param type="float" name="t" desc="" />
+            <Param type="float" name="b" desc="" />
+            <Param type="float" name="c" desc="" />
+            <Param type="float" name="d" desc="" />
+        </Function>
+        <Function name="EaseLinearOut" retType="float" paramCount="4" desc="+ b); }">
+            <Param type="float" name="t" desc="" />
+            <Param type="float" name="b" desc="" />
+            <Param type="float" name="c" desc="" />
+            <Param type="float" name="d" desc="" />
+        </Function>
+        <Function name="EaseLinearInOut" retType="float" paramCount="4" desc="+ b); }">
+            <Param type="float" name="t" desc="" />
+            <Param type="float" name="b" desc="" />
+            <Param type="float" name="c" desc="" />
+            <Param type="float" name="d" desc="" />
+        </Function>
+        <Function name="EaseSineIn" retType="float" paramCount="4" desc="(PI/2.0f)) + c + b); }">
+            <Param type="float" name="t" desc="" />
+            <Param type="float" name="b" desc="" />
+            <Param type="float" name="c" desc="" />
+            <Param type="float" name="d" desc="" />
+        </Function>
+        <Function name="EaseSineOut" retType="float" paramCount="4" desc="(PI/2.0f)) + b); }">
+            <Param type="float" name="t" desc="" />
+            <Param type="float" name="b" desc="" />
+            <Param type="float" name="c" desc="" />
+            <Param type="float" name="d" desc="" />
+        </Function>
+        <Function name="EaseSineInOut" retType="float" paramCount="4" desc="0f*(cosf(PI*t/d) - 1.0f) + b); }">
+            <Param type="float" name="t" desc="" />
+            <Param type="float" name="b" desc="" />
+            <Param type="float" name="c" desc="" />
+            <Param type="float" name="d" desc="" />
+        </Function>
+        <Function name="EaseCircIn" retType="float" paramCount="4" desc="d; return (-c*(sqrtf(1.0f - t*t) - 1.0f) + b); }">
+            <Param type="float" name="t" desc="" />
+            <Param type="float" name="b" desc="" />
+            <Param type="float" name="c" desc="" />
+            <Param type="float" name="d" desc="" />
+        </Function>
+        <Function name="EaseCircOut" retType="float" paramCount="4" desc="- 1.0f; return (c*sqrtf(1.0f - t*t) + b); }">
+            <Param type="float" name="t" desc="" />
+            <Param type="float" name="b" desc="" />
+            <Param type="float" name="c" desc="" />
+            <Param type="float" name="d" desc="" />
+        </Function>
+        <Function name="EaseCircInOut" retType="float" paramCount="4" desc="">
+            <Param type="float" name="t" desc="" />
+            <Param type="float" name="b" desc="" />
+            <Param type="float" name="c" desc="" />
+            <Param type="float" name="d" desc="" />
+        </Function>
+        <Function name="EaseCubicIn" retType="float" paramCount="4" desc="d; return (c*t*t*t + b); }">
+            <Param type="float" name="t" desc="" />
+            <Param type="float" name="b" desc="" />
+            <Param type="float" name="c" desc="" />
+            <Param type="float" name="d" desc="" />
+        </Function>
+        <Function name="EaseCubicOut" retType="float" paramCount="4" desc="- 1.0f; return (c*(t*t*t + 1.0f) + b); }">
+            <Param type="float" name="t" desc="" />
+            <Param type="float" name="b" desc="" />
+            <Param type="float" name="c" desc="" />
+            <Param type="float" name="d" desc="" />
+        </Function>
+        <Function name="EaseCubicInOut" retType="float" paramCount="4" desc="">
+            <Param type="float" name="t" desc="" />
+            <Param type="float" name="b" desc="" />
+            <Param type="float" name="c" desc="" />
+            <Param type="float" name="d" desc="" />
+        </Function>
+        <Function name="EaseQuadIn" retType="float" paramCount="4" desc="d; return (c*t*t + b); }">
+            <Param type="float" name="t" desc="" />
+            <Param type="float" name="b" desc="" />
+            <Param type="float" name="c" desc="" />
+            <Param type="float" name="d" desc="" />
+        </Function>
+        <Function name="EaseQuadOut" retType="float" paramCount="4" desc="d; return (-c*t*(t - 2.0f) + b); }">
+            <Param type="float" name="t" desc="" />
+            <Param type="float" name="b" desc="" />
+            <Param type="float" name="c" desc="" />
+            <Param type="float" name="d" desc="" />
+        </Function>
+        <Function name="EaseQuadInOut" retType="float" paramCount="4" desc="">
+            <Param type="float" name="t" desc="" />
+            <Param type="float" name="b" desc="" />
+            <Param type="float" name="c" desc="" />
+            <Param type="float" name="d" desc="" />
+        </Function>
+        <Function name="EaseExpoIn" retType="float" paramCount="4" desc="- 1.0f)) + b); }">
+            <Param type="float" name="t" desc="" />
+            <Param type="float" name="b" desc="" />
+            <Param type="float" name="c" desc="" />
+            <Param type="float" name="d" desc="" />
+        </Function>
+        <Function name="EaseExpoOut" retType="float" paramCount="4" desc=" + 1.0f) + b);    }">
+            <Param type="float" name="t" desc="" />
+            <Param type="float" name="b" desc="" />
+            <Param type="float" name="c" desc="" />
+            <Param type="float" name="d" desc="" />
+        </Function>
+        <Function name="EaseExpoInOut" retType="float" paramCount="4" desc="">
+            <Param type="float" name="t" desc="" />
+            <Param type="float" name="b" desc="" />
+            <Param type="float" name="c" desc="" />
+            <Param type="float" name="d" desc="" />
+        </Function>
+        <Function name="EaseBackIn" retType="float" paramCount="4" desc="">
+            <Param type="float" name="t" desc="" />
+            <Param type="float" name="b" desc="" />
+            <Param type="float" name="c" desc="" />
+            <Param type="float" name="d" desc="" />
+        </Function>
+        <Function name="EaseBackOut" retType="float" paramCount="4" desc="">
+            <Param type="float" name="t" desc="" />
+            <Param type="float" name="b" desc="" />
+            <Param type="float" name="c" desc="" />
+            <Param type="float" name="d" desc="" />
+        </Function>
+        <Function name="EaseBackInOut" retType="float" paramCount="4" desc="">
+            <Param type="float" name="t" desc="" />
+            <Param type="float" name="b" desc="" />
+            <Param type="float" name="c" desc="" />
+            <Param type="float" name="d" desc="" />
+        </Function>
+        <Function name="EaseBounceOut" retType="float" paramCount="4" desc="">
+            <Param type="float" name="t" desc="" />
+            <Param type="float" name="b" desc="" />
+            <Param type="float" name="c" desc="" />
+            <Param type="float" name="d" desc="" />
+        </Function>
+        <Function name="EaseBounceIn" retType="float" paramCount="4" desc="">
+            <Param type="float" name="t" desc="" />
+            <Param type="float" name="b" desc="" />
+            <Param type="float" name="c" desc="" />
+            <Param type="float" name="d" desc="" />
+        </Function>
+        <Function name="EaseBounceInOut" retType="float" paramCount="4" desc="">
+            <Param type="float" name="t" desc="" />
+            <Param type="float" name="b" desc="" />
+            <Param type="float" name="c" desc="" />
+            <Param type="float" name="d" desc="" />
+        </Function>
+        <Function name="EaseElasticIn" retType="float" paramCount="4" desc="">
+            <Param type="float" name="t" desc="" />
+            <Param type="float" name="b" desc="" />
+            <Param type="float" name="c" desc="" />
+            <Param type="float" name="d" desc="" />
+        </Function>
+        <Function name="EaseElasticOut" retType="float" paramCount="4" desc="">
+            <Param type="float" name="t" desc="" />
+            <Param type="float" name="b" desc="" />
+            <Param type="float" name="c" desc="" />
+            <Param type="float" name="d" desc="" />
+        </Function>
+        <Function name="EaseElasticInOut" retType="float" paramCount="4" desc="">
+            <Param type="float" name="t" desc="" />
+            <Param type="float" name="b" desc="" />
+            <Param type="float" name="c" desc="" />
+            <Param type="float" name="d" desc="" />
+        </Function>
+    </Functions>
+</raylibAPI>

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="Windows-1252" ?>
+<raylibAPI>
+    <Structs count="6">
+        <Struct name="Vector2" fieldCount="2" desc="">
+            <Field type="float" name="x" desc="" />
+            <Field type="float" name="y" desc="" />
+        </Struct>
+        <Struct name="Matrix2x2" fieldCount="4" desc="">
+            <Field type="float" name="m00" desc="" />
+            <Field type="float" name="m01" desc="" />
+            <Field type="float" name="m10" desc="" />
+            <Field type="float" name="m11" desc="" />
+        </Struct>
+        <Struct name="PhysicsVertexData" fieldCount="3" desc="">
+            <Field type="unsigned int" name="vertexCount" desc="Vertex count (positions and normals)" />
+            <Field type="Vector2" name="positions[PHYSAC_MAX_VERTICES]" desc="Vertex positions vectors" />
+            <Field type="Vector2" name="normals[PHYSAC_MAX_VERTICES]" desc="Vertex normals vectors" />
+        </Struct>
+        <Struct name="PhysicsShape" fieldCount="5" desc="">
+            <Field type="PhysicsShapeType" name="type" desc="Shape type (circle or polygon)" />
+            <Field type="PhysicsBody" name="body" desc="Shape physics body data pointer" />
+            <Field type="PhysicsVertexData" name="vertexData" desc="Shape vertices data (used for polygon shapes)" />
+            <Field type="float" name="radius" desc="Shape radius (used for circle shapes)" />
+            <Field type="Matrix2x2" name="transform" desc="Vertices transform matrix 2x2" />
+        </Struct>
+        <Struct name="PhysicsBodyData" fieldCount="19" desc="">
+            <Field type="unsigned int" name="id" desc="Unique identifier" />
+            <Field type="bool" name="enabled" desc="Enabled dynamics state (collisions are calculated anyway)" />
+            <Field type="Vector2" name="position" desc="Physics body shape pivot" />
+            <Field type="Vector2" name="velocity" desc="Current linear velocity applied to position" />
+            <Field type="Vector2" name="force" desc="Current linear force (reset to 0 every step)" />
+            <Field type="float" name="angularVelocity" desc="Current angular velocity applied to orient" />
+            <Field type="float" name="torque" desc="Current angular force (reset to 0 every step)" />
+            <Field type="float" name="orient" desc="Rotation in radians" />
+            <Field type="float" name="inertia" desc="Moment of inertia" />
+            <Field type="float" name="inverseInertia" desc="Inverse value of inertia" />
+            <Field type="float" name="mass" desc="Physics body mass" />
+            <Field type="float" name="inverseMass" desc="Inverse value of mass" />
+            <Field type="float" name="staticFriction" desc="Friction when the body has not movement (0 to 1)" />
+            <Field type="float" name="dynamicFriction" desc="Friction when the body has movement (0 to 1)" />
+            <Field type="float" name="restitution" desc="Restitution coefficient of the body (0 to 1)" />
+            <Field type="bool" name="useGravity" desc="Apply gravity force to dynamics" />
+            <Field type="bool" name="isGrounded" desc="Physics grounded on other body state" />
+            <Field type="bool" name="freezeOrient" desc="Physics rotation constraint" />
+            <Field type="PhysicsShape" name="shape" desc="Physics body shape information (type, radius, vertices, transform)" />
+        </Struct>
+        <Struct name="PhysicsManifoldData" fieldCount="10" desc="">
+            <Field type="unsigned int" name="id" desc="Unique identifier" />
+            <Field type="PhysicsBody" name="bodyA" desc="Manifold first physics body reference" />
+            <Field type="PhysicsBody" name="bodyB" desc="Manifold second physics body reference" />
+            <Field type="float" name="penetration" desc="Depth of penetration from collision" />
+            <Field type="Vector2" name="normal" desc="Normal direction vector from 'a' to 'b'" />
+            <Field type="Vector2" name="contacts[2]" desc="Points of contact during collision" />
+            <Field type="unsigned int" name="contactsCount" desc="Current collision number of contacts" />
+            <Field type="float" name="restitution" desc="Mixed restitution during collision" />
+            <Field type="float" name="dynamicFriction" desc="Mixed dynamic friction during collision" />
+            <Field type="float" name="staticFriction" desc="Mixed static friction during collision" />
+        </Struct>
+    </Structs>
+    <Enums count="0">
+    </Enums>
+    <Functions count="19">
+        <Function name="InitPhysics" retType="void" paramCount="0" desc="Initializes physics system">
+        </Function>
+        <Function name="UpdatePhysics" retType="void" paramCount="0" desc="Update physics system">
+        </Function>
+        <Function name="ResetPhysics" retType="void" paramCount="0" desc="Reset physics system (global variables)">
+        </Function>
+        <Function name="ClosePhysics" retType="void" paramCount="0" desc="Close physics system and unload used memory">
+        </Function>
+        <Function name="SetPhysicsTimeStep" retType="void" paramCount="1" desc="Sets physics fixed time step in milliseconds. 1.666666 by default">
+            <Param type="double" name="delta" desc="" />
+        </Function>
+        <Function name="SetPhysicsGravity" retType="void" paramCount="2" desc="Sets physics global gravity force">
+            <Param type="float" name="x" desc="" />
+            <Param type="float" name="y" desc="" />
+        </Function>
+        <Function name="CreatePhysicsBodyCircle" retType="PhysicsBody" paramCount="3" desc="Creates a new circle physics body with generic parameters">
+            <Param type="Vector2" name="pos" desc="" />
+            <Param type="float" name="radius" desc="" />
+            <Param type="float" name="density" desc="" />
+        </Function>
+        <Function name="CreatePhysicsBodyRectangle" retType="PhysicsBody" paramCount="4" desc="Creates a new rectangle physics body with generic parameters">
+            <Param type="Vector2" name="pos" desc="" />
+            <Param type="float" name="width" desc="" />
+            <Param type="float" name="height" desc="" />
+            <Param type="float" name="density" desc="" />
+        </Function>
+        <Function name="CreatePhysicsBodyPolygon" retType="PhysicsBody" paramCount="4" desc="Creates a new polygon physics body with generic parameters">
+            <Param type="Vector2" name="pos" desc="" />
+            <Param type="float" name="radius" desc="" />
+            <Param type="int" name="sides" desc="" />
+            <Param type="float" name="density" desc="" />
+        </Function>
+        <Function name="DestroyPhysicsBody" retType="void" paramCount="1" desc="Destroy a physics body">
+            <Param type="PhysicsBody" name="body" desc="" />
+        </Function>
+        <Function name="PhysicsAddForce" retType="void" paramCount="2" desc="Adds a force to a physics body">
+            <Param type="PhysicsBody" name="body" desc="" />
+            <Param type="Vector2" name="force" desc="" />
+        </Function>
+        <Function name="PhysicsAddTorque" retType="void" paramCount="2" desc="Adds an angular force to a physics body">
+            <Param type="PhysicsBody" name="body" desc="" />
+            <Param type="float" name="amount" desc="" />
+        </Function>
+        <Function name="PhysicsShatter" retType="void" paramCount="3" desc="Shatters a polygon shape physics body to little physics bodies with explosion force">
+            <Param type="PhysicsBody" name="body" desc="" />
+            <Param type="Vector2" name="position" desc="" />
+            <Param type="float" name="force" desc="" />
+        </Function>
+        <Function name="SetPhysicsBodyRotation" retType="void" paramCount="2" desc="Sets physics body shape transform based on radians parameter">
+            <Param type="PhysicsBody" name="body" desc="" />
+            <Param type="float" name="radians" desc="" />
+        </Function>
+        <Function name="GetPhysicsBody" retType="PhysicsBody" paramCount="1" desc="Returns a physics body of the bodies pool at a specific index">
+            <Param type="int" name="index" desc="" />
+        </Function>
+        <Function name="GetPhysicsBodiesCount" retType="int" paramCount="0" desc="Returns the current amount of created physics bodies">
+        </Function>
+        <Function name="GetPhysicsShapeType" retType="int" paramCount="1" desc="Returns the physics body shape type (PHYSICS_CIRCLE or PHYSICS_POLYGON)">
+            <Param type="int" name="index" desc="" />
+        </Function>
+        <Function name="GetPhysicsShapeVerticesCount" retType="int" paramCount="1" desc="Returns the amount of vertices of a physics body shape">
+            <Param type="int" name="index" desc="" />
+        </Function>
+        <Function name="GetPhysicsShapeVertex" retType="Vector2" paramCount="2" desc="Returns transformed position of a body shape (body position + vertex transformed position)">
+            <Param type="PhysicsBody" name="body" desc="" />
+            <Param type="int" name="vertex" desc="" />
+        </Function>
+    </Functions>
+</raylibAPI>
