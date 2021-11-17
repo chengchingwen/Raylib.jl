@@ -43,7 +43,7 @@ function main()
     Raylib.SetTargetFPS(60)
 
     while !Raylib.WindowShouldClose()
-        camera = Raylib.UpdateCamera(camera)
+        Raylib.UpdateCamera!(camera)
 
         Raylib.BeginDrawing()
         Raylib.ClearBackground(RAYWHITE)

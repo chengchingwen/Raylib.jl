@@ -12,7 +12,7 @@ rayvector(v::Vararg{<:Real, 4}) = RayVector4(v)
 
 const RayMatrix = SMatrix{4, 4, Cfloat, 16}
 
-struct RayCamera3D
+mutable struct RayCamera3D
     position::RayVector3  # Camera position
     target::RayVector3    # Camera target it looks-at
     up::RayVector3        # Camera up vector (rotation over its axis)
@@ -21,7 +21,7 @@ struct RayCamera3D
     projection::Cint      # Camera projection: CAMERA_PERSPECTIVE or CAMERA_ORTHOGRAPHIC
 end
 
-struct RayCamera2D
+mutable struct RayCamera2D
     offset::RayVector2  # Camera offset (displacement from target)
     target::RayVector2  # Camera target (rotation and zoom origin)
     rotation::Cfloat    # Camera rotation in degrees

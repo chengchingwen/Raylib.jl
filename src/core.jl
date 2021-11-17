@@ -20,6 +20,17 @@ function UpdateCamera(camera::RayCamera3D)
 end
 
 """
+    UpdateCamera!(camera::RayCamera3D)
+
+Update camera position for selected mode
+"""
+function UpdateCamera!(camera::RayCamera3D)
+    camera_ptr = convert(Ptr{RayCamera3D}, pointer_from_objref(camera))
+    Raylib.UpdateCamera(camera_ptr)
+    return camera
+end
+
+"""
     GetDroppedFiles()
 
 Return a list of dropped file paths.
