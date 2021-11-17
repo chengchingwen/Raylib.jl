@@ -41,3 +41,10 @@ function GetDroppedFiles()
     fcstr = Base.unsafe_wrap(Vector{Cstring}, fptrs, count[])
     return map(Base.unsafe_string, fcstr)
 end
+
+
+for func in :(
+    IsKeyDown, IsKeyPressed, IsKeyReleased, IsKeyUp
+).args
+    @eval $func(k::KeyboardKey) = $func(convert(Integer, k))
+end

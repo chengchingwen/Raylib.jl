@@ -47,9 +47,9 @@ const typemap_dict = Dict{String, Any}(
     "VrDeviceInfo"    => :RayVrDeviceInfo,
     "VrStereoConfig"  => :RayVrStereoConfig,
     "Matrix"          => :RayMatrix,
-    "Vector2"         => :RayVector2,
-    "Vector3"         => :RayVector3,
-    "Vector4"         => :RayVector4,
+    "Vector2"         => (:RayVector2, :RayVector2, :(StaticVector{2}), :RayVector2),
+    "Vector3"         => (:RayVector3, :RayVector3, :(StaticVector{3}), :RayVector3),
+    "Vector4"         => (:RayVector4, :RayVector4, :(StaticVector{4}), :RayVector4),
 )
 
 default_get(x::Tuple, i, y=x[3]) = 1 <= i <= length(x) ? x[i] : y
