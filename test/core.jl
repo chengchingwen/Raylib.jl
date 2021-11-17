@@ -20,25 +20,54 @@ end
 @testset "core" begin
     camera = Raylib.RayCamera2D(
         Raylib.rayvector(1, 2), # camera offset
-        Raylib.rayvector(3, 4), # camera position
+        Raylib.rayvector(3, 4), # camera target
         0, # camera rotation
         1, # camera zoom
     )
-    test_camera(camera, [Raylib.rayvector(1, 2), Raylib.rayvector(3, 4), 0, 1])
+    test_camera(camera, [
+        Raylib.rayvector(1, 2),
+        Raylib.rayvector(3, 4),
+        0,
+        1
+    ])
+
+    camera.offset += Raylib.rayvector(5, 6)
+    camera.target += Raylib.rayvector(7, 8)
+    camera.rotation = 45
+    camera.zoom = 3
+    test_camera(camera, [
+        Raylib.rayvector(1, 2) + Raylib.rayvector(5, 6),
+        Raylib.rayvector(3, 4) + Raylib.rayvector(7, 8),
+        45,
+        3
+    ])
 
     camera = Raylib.RayCamera3D(
         Raylib.rayvector(0, 10, 10), # camera position
         Raylib.rayvector(0, 0, 0), # camera looking at point
         Raylib.rayvector(0, 1, 0), # camera up vector (rotation towards target)
         45, # camera field-of-view Y
-        Int(Raylib.CAMERA_PERSPECTIVE), # camera mode type
+        Raylib.CAMERA_PERSPECTIVE, # camera mode type
     )
     test_camera(camera, [
         Raylib.rayvector(0, 10, 10),
         Raylib.rayvector(0, 0, 0),
         Raylib.rayvector(0, 1, 0),
         45,
-        Int(Raylib.CAMERA_PERSPECTIVE)
+        Raylib.CAMERA_PERSPECTIVE
+    ])
+
+    camera.position += Raylib.rayvector(1, 2, 3)
+    camera.target += Raylib.rayvector(3, 2, 1)
+    camera.up += Raylib.rayvector(4, 5, 6)
+    camera.fovy = 60
+    camera.projection = Int(Raylib.CAMERA_ORTHOGRAPHIC)
+    test_camera(camera, [
+        Raylib.rayvector(0, 10, 10) + Raylib.rayvector(1, 2, 3),
+        Raylib.rayvector(0, 0, 0) + Raylib.rayvector(3, 2, 1),
+        Raylib.rayvector(0, 1, 0) + Raylib.rayvector(4, 5, 6),
+        60,
+        Raylib.CAMERA_ORTHOGRAPHIC
     ])
 
 end
