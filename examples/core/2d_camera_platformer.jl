@@ -1,4 +1,5 @@
 using Raylib
+using Raylib: rayvector, IsKeyDown
 using StaticArrays
 
 const G = 400
@@ -6,10 +7,14 @@ const PLAYER_JUMP_SPD = 350
 const PLAYER_HOR_SPD = 200
 
 mutable struct Player
-    position::SVector{2, Float32}
-    speed::Float32
+    pos_x::Float64
+    pos_y::Float64
+    speed::Float64
     canJump::Bool
 end
+Player(pos, s, j) = Player(pos..., s, j)
+
+position(p::Player) = rayvector(p.pos_x, p.pos_y)
 
 struct EnvItem
     rect::Raylib.RayRectangle
@@ -17,38 +22,36 @@ struct EnvItem
     color::Raylib.RayColor
 end
 
-function UpdatePlayer!(player::Player, envItems::Vector{EnvItem}, envItemsLength::Int64, delta::Float32)
-    if Raylib.IsKeyDown(Int(Raylib.KEY_LEFT))
-        player.position = Raylib.rayvector(player.position[1]-PLAYER_HOR_SPD*delta, player.position[2])
-    end
-    if Raylib.IsKeyDown(Int(Raylib.KEY_RIGHT))
-        player.position = Raylib.rayvector(player.position[1]+PLAYER_HOR_SPD*delta, player.position[2])
-    end
-    if Raylib.IsKeyDown(Int(Raylib.KEY_SPACE)) && player.canJump
+function isoverlap(item, player, movement)
+    rect = item.rect
+    pos = position(player)
+    return rect.x <= pos.x <= rect.x + rect.width &&
+        rect.y - movement < pos.y <= rect.y
+end
+
+function UpdatePlayer!(player::Player, envItems::Vector{EnvItem}, delta::Float32)
+    hor_movement = PLAYER_HOR_SPD*delta
+    ver_movement = player.speed * delta
+
+    IsKeyDown(Raylib.KEY_LEFT)  && (player.pos_x -= hor_movement)
+    IsKeyDown(Raylib.KEY_RIGHT) && (player.pos_x += hor_movement)
+
+    if IsKeyDown(Raylib.KEY_SPACE) && player.canJump
         player.speed = -PLAYER_JUMP_SPD
         player.canJump = false
     end
 
     hitObstacle = false
-    for i in 1:envItemsLength
-
-        ei = envItems[i]
-        p = player.position
-        if (
-            ei.blocking &&
-            ei.rect.x <= p[1] &&
-            ei.rect.x + ei.rect.width >= p[1] &&
-            ei.rect.y >= p[2] &&
-            ei.rect.y < p[2] + player.speed*delta
-        )
-            hitObstacle = true
+    for ei in envItems
+        if ei.blocking && isoverlap(ei, player, ver_movement)
             player.speed = 0
-            player.position = Raylib.rayvector(p[1], ei.rect.y)
+            player.pos_y = ei.rect.y
+            hitObstacle = true
         end
     end
 
     if !hitObstacle
-        player.position = Raylib.rayvector(player.position[1], player.position[2]+player.speed*delta)
+        player.pos_y += ver_movement
         player.speed += G*delta
         player.canJump = false
     else
@@ -58,59 +61,48 @@ function UpdatePlayer!(player::Player, envItems::Vector{EnvItem}, envItemsLength
     return player
 end
 
-
 function UpdateCameraCenter(
     camera::Raylib.RayCamera2D,
-    player::Player,
-    envItems::Vector{EnvItem},  #
-    envItemsLength::Int64,  #
-    delta::Float32, #
+    player::Player, _, _,
     width::Int64,
-    height::Int64
+    height::Int64,
 )
-    offset = Raylib.rayvector(width/2, height/2)
-    target = player.position
-
-    return Raylib.RayCamera2D(offset, target, camera.rotation, camera.zoom)
+    camera.offset = rayvector(width/2, height/2)
+    camera.target = position(player)
+    return camera
 end
 
 function UpdateCameraCenterInsideMap(
     camera::Raylib.RayCamera2D,
     player::Player,
     envItems::Vector{EnvItem},
-    envItemsLength::Int64,
-    delta::Float32, #
+    _,
     width::Int64,
-    height::Int64
+    height::Int64,
 )
-    camera = UpdateCameraCenter(camera, player, envItems, envItemsLength, delta, width, height)
+    camera = UpdateCameraCenter(camera, player, envItems, nothing, width, height)
 
     minX = minY = 1000; maxX = maxY = -1000
-    for i in 1:envItemsLength
-        ei = envItems[i]
-        minX = min(ei.rect.x, minX)
-        maxX = max(ei.rect.x + ei.rect.width, maxX)
-        minY = min(ei.rect.y, minY)
-        maxY = max(ei.rect.y + ei.rect.height, maxY)
-    end
 
-    max_ = Raylib.GetWorldToScreen2D(Raylib.rayvector(maxX, maxY), camera)
-    min_ = Raylib.GetWorldToScreen2D(Raylib.rayvector(minX, minY), camera)
+    minX = minimum(item->item.rect.x, envItems; init=1000)
+    minY = minimum(item->item.rect.y, envItems; init=1000)
+    maxX = maximum(item->item.rect.x + item.rect.width, envItems; init=-1000)
+    maxY = maximum(item->item.rect.y + item.rect.height, envItems; init=-1000)
 
-    offset = camera.offset
-    (max_[1] < width) && (offset = Raylib.rayvector(width - (max_[1] - width/2), camera.offset[2]))
-    (max_[2] < height) && (offset = Raylib.rayvector(camera.offset[1], height - (max_[2] - height/2)))
-    (min_[1] > 0) && (offset = Raylib.rayvector(width/2 - min_[1], camera.offset[2]))
-    (min_[2] > 0) && (offset = Raylib.rayvector(camera.offset[1], height/2 - min_[2]))
+    maxbound = Raylib.GetWorldToScreen2D(rayvector(maxX, maxY), camera)
+    minbound = Raylib.GetWorldToScreen2D(rayvector(minX, minY), camera)
 
-    return Raylib.RayCamera2D(offset, camera.target, camera.rotation, camera.zoom)
+    (maxbound.x < width)  && (camera.offset_x = width  - (maxbound.x - width/2))
+    (maxbound.y < height) && (camera.offset_y = height - (maxbound.y - height/2))
+    (minbound.x > 0) && (camera.offset_x = width/2  - minbound.x)
+    (minbound.y > 0) && (camera.offset_y = height/2 - minbound.y)
+    return camera
 end
 
 function UpdateCameraCenterSmoothFollow(
     camera::Raylib.RayCamera2D,
     player::Player,
-    envItems::Vector{EnvItem},  #
-    envItemsLength::Int64,  #
+    _,
     delta::Float32,
     width::Int64,
     height::Int64
@@ -119,17 +111,17 @@ function UpdateCameraCenterSmoothFollow(
     minEffectLength = 10
     fractionSpeed = 0.8
 
-    offset = Raylib.rayvector(width/2, height/2)
-    diff = player.position - camera.target
+    camera.offset = rayvector(width/2, height/2)
+
+    diff = position(player) - camera.target
     length = sqrt(sum(diff.^2))
 
-    target = camera.target
     if length > minEffectLength
         speed = max(fractionSpeed*length, minSpeed);
-        target = target + speed*delta/length .* diff
+        camera.target += speed*delta/length .* diff
     end
 
-    return Raylib.RayCamera2D(offset, target, camera.rotation, camera.zoom)
+    return camera
 end
 
 mutable struct UpdateCameraEvenOutOnLandingArgv
@@ -143,59 +135,34 @@ const uceool_argv = UpdateCameraEvenOutOnLandingArgv(700, false, 0)
 function UpdateCameraEvenOutOnLanding(
     camera::Raylib.RayCamera2D,
     player::Player,
-    envItems::Vector{EnvItem},  #
-    envItemsLength::Int64,  #
+    _,
     delta::Float32,
     width::Int64,
     height::Int64
 )
-    camera = Raylib.RayCamera2D(
-        Raylib.rayvector(width/2, height/2),
-        Raylib.rayvector(player.position[1], camera.target[2]),
-        camera.rotation,
-        camera.zoom
-    )
+    camera.offset = rayvector(width/2, height/2)
+    camera.target = rayvector(player.pos_x, camera.target[2])
 
     if uceool_argv.eveningOut
         if uceool_argv.evenOutTarget > camera.target[2]
-            camera = Raylib.RayCamera2D(
-                camera.offset,
-                Raylib.rayvector(camera.target[1], camera.target[2] + uceool_argv.evenOutSpeed*delta),
-                camera.rotation,
-                camera.zoom
-            )
+            camera.target += rayvector(0, uceool_argv.evenOutSpeed*delta)
 
             if camera.target[2] > uceool_argv.evenOutTarget
-                camera = Raylib.RayCamera2D(
-                    camera.offset,
-                    Raylib.rayvector(camera.target[1], uceool_argv.evenOutTarget),
-                    camera.rotation,
-                    camera.zoom
-                )
+                camera.target = rayvector(camera.target[1], uceool_argv.evenOutTarget)
                 uceool_argv.eveningOut = 0
             end
         else
-            camera = Raylib.RayCamera2D(
-                camera.offset,
-                Raylib.rayvector(camera.target[1], camera.target[2] - uceool_argv.evenOutSpeed*delta),
-                camera.rotation,
-                camera.zoom
-            )
+            camera.target -= rayvector(0, uceool_argv.evenOutSpeed*delta)
 
             if camera.target[2] < uceool_argv.evenOutTarget
-                camera = Raylib.RayCamera2D(
-                    camera.offset,
-                    Raylib.rayvector(camera.target[1], uceool_argv.evenOutTarget),
-                    camera.rotation,
-                    camera.zoom
-                )
+                camera.target = rayvector(camera.target[1], uceool_argv.evenOutTarget)
                 uceool_argv.eveningOut = 0
             end
         end
     else
-        if player.canJump && player.speed == 0 && player.position[2] != camera.target[2]
+        if player.canJump && player.speed == 0 && player.pos_y != camera.target[2]
             uceool_argv.eveningOut = 1
-            uceool_argv.evenOutTarget = player.position[2]
+            uceool_argv.evenOutTarget = player.pos_y
         end
     end
 
@@ -205,30 +172,23 @@ end
 function UpdateCameraPlayerBoundsPush(
     camera::Raylib.RayCamera2D,
     player::Player,
-    envItems::Vector{EnvItem},  #
-    envItemsLength::Int64,  #
-    delta::Float32, #
+    _, _,
     width::Int64,
     height::Int64
 )
-    bbox = Raylib.rayvector(0.2, 0.2)
+    bbox = rayvector(0.2, 0.2)
+    worldbox = 0.5rayvector(width, height)
 
-    bboxWorldMin = Raylib.GetScreenToWorld2D(Raylib.rayvector((1 - bbox[1])*0.5*width, (1 - bbox[2])*0.5*height), camera)
-    bboxWorldMax = Raylib.GetScreenToWorld2D(Raylib.rayvector((1 + bbox[1])*0.5*width, (1 + bbox[2])*0.5*height), camera)
-    camera = Raylib.RayCamera2D(
-        Raylib.rayvector((1 - bbox[1])*0.5 * width, (1 - bbox[2])*0.5*height),
-        camera.target,
-        camera.rotation,
-        camera.zoom
-    )
+    bboxWorldMin = Raylib.GetScreenToWorld2D(worldbox .* (1 .- bbox), camera)
+    bboxWorldMax = Raylib.GetScreenToWorld2D(worldbox .* (1 .+ bbox), camera)
+    camera.offset = worldbox .* (1 .- bbox)
 
-    target = camera.target
-    (player.position[1] < bboxWorldMin[1]) &&  (target = Raylib.rayvector(player.position[1], camera.target[2]))
-    (player.position[2] < bboxWorldMin[2]) &&  (target = Raylib.rayvector(camera.target[1], player.position[2]))
-    (player.position[1] > bboxWorldMax[1]) &&  (target = Raylib.rayvector(bboxWorldMin[1] + player.position[1] - bboxWorldMax[1], camera.target[2]))
-    (player.position[2] > bboxWorldMax[2]) &&  (target = Raylib.rayvector(camera.target[1], bboxWorldMin[2] + player.position[2] - bboxWorldMax[2]))
+    (player.pos_x < bboxWorldMin.x) &&  (camera.target_x = player.pos_x)
+    (player.pos_y < bboxWorldMin.y) &&  (camera.target_y = player.pos_y)
+    (player.pos_x > bboxWorldMax.x) &&  (camera.target_x = bboxWorldMin.x + player.pos_x - bboxWorldMax.x)
+    (player.pos_y > bboxWorldMax.y) &&  (camera.target_y = bboxWorldMin.y + player.pos_y - bboxWorldMax.y)
 
-    return Raylib.RayCamera2D(camera.offset, target, camera.rotation, camera.zoom)
+    return camera
 end
 
 const screenWidth = 800
@@ -240,7 +200,7 @@ function main()
         "raylib [core] example - 2d camera"
     )
 
-    player = Player(Raylib.rayvector(400, 280), 0, false)
+    player = Player(400, 280, 0, false)
     envItems = [
         EnvItem(Raylib.RayRectangle(0, 0, 1000, 400), false, Raylib.LIGHTGRAY),
         EnvItem(Raylib.RayRectangle(0, 400, 1000, 200), true, Raylib.GRAY),
@@ -248,11 +208,10 @@ function main()
         EnvItem(Raylib.RayRectangle(250, 300, 100, 10), true, Raylib.GRAY),
         EnvItem(Raylib.RayRectangle(650, 300, 100, 10), true, Raylib.GRAY),
     ]
-    envItemsLength = length(envItems)
 
     camera = Raylib.RayCamera2D(
-        Raylib.rayvector(screenWidth/2, screenHeight/2),
-        player.position,
+        rayvector(screenWidth/2, screenHeight/2),
+        position(player),
         0,
         1
     )
@@ -278,43 +237,18 @@ function main()
         # Update
         deltaTime = Raylib.GetFrameTime();
 
-        UpdatePlayer!(player, envItems, envItemsLength, deltaTime)
+        UpdatePlayer!(player, envItems, deltaTime)
 
-        camera = Raylib.RayCamera2D(
-            camera.offset,
-            camera.target,
-            camera.rotation,
-            camera.zoom + Raylib.GetMouseWheelMove()*0.05
-        )
+        zoom = camera.zoom + 0.05Raylib.GetMouseWheelMove()
+        camera.zoom = max(min(3, zoom), 0.25)
 
-        if camera.zoom > 3
-            camera = Raylib.RayCamera2D(
-                camera.offset,
-                camera.target,
-                camera.rotation,
-                3
-            )
-        elseif camera.zoom < 0.25
-            camera = Raylib.RayCamera2D(
-                camera.offset,
-                camera.target,
-                camera.rotation,
-                0.25
-            )
+        if Raylib.IsKeyPressed(Raylib.KEY_R)
+            camera.zoom = 1
+            player.pos_x, player.pos_y = (400, 280)
         end
 
-        if Raylib.IsKeyPressed(Int(Raylib.KEY_R))
-            camera = Raylib.RayCamera2D(
-                camera.offset,
-                camera.target,
-                camera.rotation,
-                1
-            )
-            player.position = Raylib.rayvector(400, 280)
-        end
-
-        if Raylib.IsKeyPressed(Int(Raylib.KEY_C))
-            cameraOption = cameraOption%cameraUpdatersLength + 1
+        if Raylib.IsKeyPressed(Raylib.KEY_C)
+            cameraOption = mod1(cameraOption, cameraUpdatersLength)
         end
 
         # Call update camera function by its pointer
@@ -322,7 +256,6 @@ function main()
             camera,
             player,
             envItems,
-            envItemsLength,
             deltaTime,
             screenWidth,
             screenHeight
@@ -335,11 +268,11 @@ function main()
 
         Raylib.BeginMode2D(camera)
 
-        for i in 1:envItemsLength
-            Raylib.DrawRectangleRec(envItems[i].rect, envItems[i].color)
+        for ei in envItems
+            Raylib.DrawRectangleRec(ei.rect, ei.color)
         end
 
-        playerRect = Raylib.RayRectangle(player.position[1] - 20, player.position[2] - 40, 40, 40)
+        playerRect = Raylib.RayRectangle(position(player) .- (20, 40), 40, 40)
         Raylib.DrawRectangleRec(playerRect, Raylib.RED)
 
         Raylib.EndMode2D()
