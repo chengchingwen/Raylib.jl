@@ -1,0 +1,427 @@
+<?xml version="1.0" encoding="Windows-1252" ?>
+<raylibAPI>
+    <Structs count="8">
+        <Struct name="Vector2" fieldCount="2" desc="">
+            <Field type="float" name="x" desc="" />
+            <Field type="float" name="y" desc="" />
+        </Struct>
+        <Struct name="Vector3" fieldCount="3" desc="">
+            <Field type="float" name="x" desc="" />
+            <Field type="float" name="y" desc="" />
+            <Field type="float" name="z" desc="" />
+        </Struct>
+        <Struct name="Color" fieldCount="4" desc="">
+            <Field type="unsigned char" name="r" desc="" />
+            <Field type="unsigned char" name="g" desc="" />
+            <Field type="unsigned char" name="b" desc="" />
+            <Field type="unsigned char" name="a" desc="" />
+        </Struct>
+        <Struct name="Rectangle" fieldCount="4" desc="">
+            <Field type="float" name="x" desc="" />
+            <Field type="float" name="y" desc="" />
+            <Field type="float" name="width" desc="" />
+            <Field type="float" name="height" desc="" />
+        </Struct>
+        <Struct name="Texture2D" fieldCount="5" desc="">
+            <Field type="unsigned int" name="id" desc="OpenGL texture id" />
+            <Field type="int" name="width" desc="Texture base width" />
+            <Field type="int" name="height" desc="Texture base height" />
+            <Field type="int" name="mipmaps" desc="Mipmap levels, 1 by default" />
+            <Field type="int" name="format" desc="Data format (PixelFormat type)" />
+        </Struct>
+        <Struct name="GlyphInfo" fieldCount="5" desc="">
+            <Field type="int" name="value" desc="Character value (Unicode)" />
+            <Field type="int" name="offsetX" desc="Character offset X when drawing" />
+            <Field type="int" name="offsetY" desc="Character offset Y when drawing" />
+            <Field type="int" name="advanceX" desc="Character advance position X" />
+            <Field type="Image" name="image" desc="Character image data" />
+        </Struct>
+        <Struct name="Font" fieldCount="5" desc="">
+            <Field type="int" name="baseSize" desc="Base size (default chars height)" />
+            <Field type="int" name="glyphCount" desc="Number of characters" />
+            <Field type="Texture2D" name="texture" desc="Characters texture atlas" />
+            <Field type="Rectangle *" name="recs" desc="Characters rectangles in texture" />
+            <Field type="GlyphInfo *" name="chars" desc="Characters info data" />
+        </Struct>
+        <Struct name="GuiStyleProp" fieldCount="3" desc="">
+            <Field type="unsigned short" name="controlId" desc="" />
+            <Field type="unsigned short" name="propertyId" desc="" />
+            <Field type="int" name="propertyValue" desc="" />
+        </Struct>
+    </Structs>
+    <Enums count="20">
+        <Enum name="Vector2" valueCount="0" desc="">
+        </Enum>
+        <Enum name="GuiControlState" valueCount="4" desc="">
+            <Value name="GUI_STATE_NORMAL" integer="0" desc="" />
+            <Value name="GUI_STATE_FOCUSED" integer="1" desc="" />
+            <Value name="GUI_STATE_PRESSED" integer="2" desc="" />
+            <Value name="GUI_STATE_DISABLED" integer="3" desc="" />
+        </Enum>
+        <Enum name="GuiTextAlignment" valueCount="3" desc="">
+            <Value name="GUI_TEXT_ALIGN_LEFT" integer="0" desc="" />
+            <Value name="GUI_TEXT_ALIGN_CENTER" integer="1" desc="" />
+            <Value name="GUI_TEXT_ALIGN_RIGHT" integer="2" desc="" />
+        </Enum>
+        <Enum name="GuiControl" valueCount="16" desc="">
+            <Value name="DEFAULT" integer="0" desc="" />
+            <Value name="LABEL" integer="1" desc="" />
+            <Value name="BUTTON" integer="2" desc="" />
+            <Value name="TOGGLE" integer="3" desc="" />
+            <Value name="SLIDER" integer="4" desc="" />
+            <Value name="PROGRESSBAR" integer="5" desc="" />
+            <Value name="CHECKBOX" integer="6" desc="" />
+            <Value name="COMBOBOX" integer="7" desc="" />
+            <Value name="DROPDOWNBOX" integer="8" desc="" />
+            <Value name="TEXTBOX" integer="9" desc="" />
+            <Value name="VALUEBOX" integer="10" desc="" />
+            <Value name="SPINNER" integer="11" desc="" />
+            <Value name="LISTVIEW" integer="12" desc="" />
+            <Value name="COLORPICKER" integer="13" desc="" />
+            <Value name="SCROLLBAR" integer="14" desc="" />
+            <Value name="STATUSBAR" integer="15" desc="" />
+        </Enum>
+        <Enum name="GuiControlProperty" valueCount="16" desc="">
+            <Value name="BORDER_COLOR_NORMAL" integer="0" desc="" />
+            <Value name="BASE_COLOR_NORMAL" integer="1" desc="" />
+            <Value name="TEXT_COLOR_NORMAL" integer="2" desc="" />
+            <Value name="BORDER_COLOR_FOCUSED" integer="3" desc="" />
+            <Value name="BASE_COLOR_FOCUSED" integer="4" desc="" />
+            <Value name="TEXT_COLOR_FOCUSED" integer="5" desc="" />
+            <Value name="BORDER_COLOR_PRESSED" integer="6" desc="" />
+            <Value name="BASE_COLOR_PRESSED" integer="7" desc="" />
+            <Value name="TEXT_COLOR_PRESSED" integer="8" desc="" />
+            <Value name="BORDER_COLOR_DISABLED" integer="9" desc="" />
+            <Value name="BASE_COLOR_DISABLED" integer="10" desc="" />
+            <Value name="TEXT_COLOR_DISABLED" integer="11" desc="" />
+            <Value name="BORDER_WIDTH" integer="12" desc="" />
+            <Value name="TEXT_PADDING" integer="13" desc="" />
+            <Value name="TEXT_ALIGNMENT" integer="14" desc="" />
+            <Value name="RESERVED" integer="15" desc="" />
+        </Enum>
+        <Enum name="GuiDefaultProperty" valueCount="4" desc="">
+            <Value name="TEXT_SIZE" integer="16" desc="" />
+            <Value name="TEXT_SPACING" integer="17" desc="" />
+            <Value name="LINE_COLOR" integer="18" desc="" />
+            <Value name="BACKGROUND_COLOR" integer="19" desc="" />
+        </Enum>
+        <Enum name="GuiToggleProperty" valueCount="1" desc="">
+            <Value name="GROUP_PADDING" integer="16" desc="" />
+        </Enum>
+        <Enum name="GuiSliderProperty" valueCount="2" desc="">
+            <Value name="SLIDER_WIDTH" integer="16" desc="" />
+            <Value name="SLIDER_PADDING" integer="17" desc="" />
+        </Enum>
+        <Enum name="GuiProgressBarProperty" valueCount="1" desc="">
+            <Value name="PROGRESS_PADDING" integer="16" desc="" />
+        </Enum>
+        <Enum name="GuiCheckBoxProperty" valueCount="1" desc="">
+            <Value name="CHECK_PADDING" integer="16" desc="" />
+        </Enum>
+        <Enum name="GuiComboBoxProperty" valueCount="2" desc="">
+            <Value name="COMBO_BUTTON_WIDTH" integer="16" desc="" />
+            <Value name="COMBO_BUTTON_PADDING" integer="17" desc="" />
+        </Enum>
+        <Enum name="GuiDropdownBoxProperty" valueCount="2" desc="">
+            <Value name="ARROW_PADDING" integer="16" desc="" />
+            <Value name="DROPDOWN_ITEMS_PADDING" integer="17" desc="" />
+        </Enum>
+        <Enum name="GuiTextBoxProperty" valueCount="4" desc="">
+            <Value name="TEXT_INNER_PADDING" integer="16" desc="" />
+            <Value name="TEXT_LINES_PADDING" integer="17" desc="" />
+            <Value name="COLOR_SELECTED_FG" integer="18" desc="" />
+            <Value name="COLOR_SELECTED_BG" integer="19" desc="" />
+        </Enum>
+        <Enum name="GuiSpinnerProperty" valueCount="2" desc="">
+            <Value name="SPIN_BUTTON_WIDTH" integer="16" desc="" />
+            <Value name="SPIN_BUTTON_PADDING" integer="17" desc="" />
+        </Enum>
+        <Enum name="GuiScrollBarProperty" valueCount="6" desc="">
+            <Value name="ARROWS_SIZE" integer="16" desc="" />
+            <Value name="ARROWS_VISIBLE" integer="17" desc="" />
+            <Value name="SCROLL_SLIDER_PADDING" integer="18" desc="" />
+            <Value name="SCROLL_SLIDER_SIZE" integer="19" desc="" />
+            <Value name="SCROLL_PADDING" integer="20" desc="" />
+            <Value name="SCROLL_SPEED" integer="21" desc="" />
+        </Enum>
+        <Enum name="GuiScrollBarSide" valueCount="2" desc="">
+            <Value name="SCROLLBAR_LEFT_SIDE" integer="0" desc="" />
+            <Value name="SCROLLBAR_RIGHT_SIDE" integer="1" desc="" />
+        </Enum>
+        <Enum name="GuiListViewProperty" valueCount="4" desc="">
+            <Value name="LIST_ITEMS_HEIGHT" integer="16" desc="" />
+            <Value name="LIST_ITEMS_PADDING" integer="17" desc="" />
+            <Value name="SCROLLBAR_WIDTH" integer="18" desc="" />
+            <Value name="SCROLLBAR_SIDE" integer="19" desc="" />
+        </Enum>
+        <Enum name="GuiColorPickerProperty" valueCount="5" desc="">
+            <Value name="COLOR_SELECTOR_SIZE" integer="16" desc="" />
+            <Value name="HUEBAR_WIDTH" integer="17" desc="" />
+            <Value name="HUEBAR_PADDING" integer="18" desc="" />
+            <Value name="HUEBAR_SELECTOR_HEIGHT" integer="19" desc="" />
+            <Value name="HUEBAR_SELECTOR_OVERFLOW" integer="20" desc="" />
+        </Enum>
+        <Enum name="guiIconName" valueCount="256" desc="">
+            <Value name="RICON_NONE" integer="0" desc="" />
+            <Value name="RICON_FOLDER_FILE_OPEN" integer="1" desc="" />
+            <Value name="RICON_FILE_SAVE_CLASSIC" integer="2" desc="" />
+            <Value name="RICON_FOLDER_OPEN" integer="3" desc="" />
+            <Value name="RICON_FOLDER_SAVE" integer="4" desc="" />
+            <Value name="RICON_FILE_OPEN" integer="5" desc="" />
+            <Value name="RICON_FILE_SAVE" integer="6" desc="" />
+            <Value name="RICON_FILE_EXPORT" integer="7" desc="" />
+            <Value name="RICON_FILE_NEW" integer="8" desc="" />
+            <Value name="RICON_FILE_DELETE" integer="9" desc="" />
+            <Value name="RICON_FILETYPE_TEXT" integer="10" desc="" />
+            <Value name="RICON_FILETYPE_AUDIO" integer="11" desc="" />
+            <Value name="RICON_FILETYPE_IMAGE" integer="12" desc="" />
+            <Value name="RICON_FILETYPE_PLAY" integer="13" desc="" />
+            <Value name="RICON_FILETYPE_VIDEO" integer="14" desc="" />
+            <Value name="RICON_FILETYPE_INFO" integer="15" desc="" />
+            <Value name="RICON_FILE_COPY" integer="16" desc="" />
+            <Value name="RICON_FILE_CUT" integer="17" desc="" />
+            <Value name="RICON_FILE_PASTE" integer="18" desc="" />
+            <Value name="RICON_CURSOR_HAND" integer="19" desc="" />
+            <Value name="RICON_CURSOR_POINTER" integer="20" desc="" />
+            <Value name="RICON_CURSOR_CLASSIC" integer="21" desc="" />
+            <Value name="RICON_PENCIL" integer="22" desc="" />
+            <Value name="RICON_PENCIL_BIG" integer="23" desc="" />
+            <Value name="RICON_BRUSH_CLASSIC" integer="24" desc="" />
+            <Value name="RICON_BRUSH_PAINTER" integer="25" desc="" />
+            <Value name="RICON_WATER_DROP" integer="26" desc="" />
+            <Value name="RICON_COLOR_PICKER" integer="27" desc="" />
+            <Value name="RICON_RUBBER" integer="28" desc="" />
+            <Value name="RICON_COLOR_BUCKET" integer="29" desc="" />
+            <Value name="RICON_TEXT_T" integer="30" desc="" />
+            <Value name="RICON_TEXT_A" integer="31" desc="" />
+            <Value name="RICON_SCALE" integer="32" desc="" />
+            <Value name="RICON_RESIZE" integer="33" desc="" />
+            <Value name="RICON_FILTER_POINT" integer="34" desc="" />
+            <Value name="RICON_FILTER_BILINEAR" integer="35" desc="" />
+            <Value name="RICON_CROP" integer="36" desc="" />
+            <Value name="RICON_CROP_ALPHA" integer="37" desc="" />
+            <Value name="RICON_SQUARE_TOGGLE" integer="38" desc="" />
+            <Value name="RICON_SYMMETRY" integer="39" desc="" />
+            <Value name="RICON_SYMMETRY_HORIZONTAL" integer="40" desc="" />
+            <Value name="RICON_SYMMETRY_VERTICAL" integer="41" desc="" />
+            <Value name="RICON_LENS" integer="42" desc="" />
+            <Value name="RICON_LENS_BIG" integer="43" desc="" />
+            <Value name="RICON_EYE_ON" integer="44" desc="" />
+            <Value name="RICON_EYE_OFF" integer="45" desc="" />
+            <Value name="RICON_FILTER_TOP" integer="46" desc="" />
+            <Value name="RICON_FILTER" integer="47" desc="" />
+            <Value name="RICON_TARGET_POINT" integer="48" desc="" />
+            <Value name="RICON_TARGET_SMALL" integer="49" desc="" />
+            <Value name="RICON_TARGET_BIG" integer="50" desc="" />
+            <Value name="RICON_TARGET_MOVE" integer="51" desc="" />
+            <Value name="RICON_CURSOR_MOVE" integer="52" desc="" />
+            <Value name="RICON_CURSOR_SCALE" integer="53" desc="" />
+            <Value name="RICON_CURSOR_SCALE_RIGHT" integer="54" desc="" />
+            <Value name="RICON_CURSOR_SCALE_LEFT" integer="55" desc="" />
+            <Value name="RICON_UNDO" integer="56" desc="" />
+            <Value name="RICON_REDO" integer="57" desc="" />
+            <Value name="RICON_REREDO" integer="58" desc="" />
+            <Value name="RICON_MUTATE" integer="59" desc="" />
+            <Value name="RICON_ROTATE" integer="60" desc="" />
+            <Value name="RICON_REPEAT" integer="61" desc="" />
+            <Value name="RICON_SHUFFLE" integer="62" desc="" />
+            <Value name="RICON_EMPTYBOX" integer="63" desc="" />
+            <Value name="RICON_TARGET" integer="64" desc="" />
+            <Value name="RICON_TARGET_SMALL_FILL" integer="65" desc="" />
+            <Value name="RICON_TARGET_BIG_FILL" integer="66" desc="" />
+            <Value name="RICON_TARGET_MOVE_FILL" integer="67" desc="" />
+            <Value name="RICON_CURSOR_MOVE_FILL" integer="68" desc="" />
+            <Value name="RICON_CURSOR_SCALE_FILL" integer="69" desc="" />
+            <Value name="RICON_CURSOR_SCALE_RIGHT_FILL" integer="70" desc="" />
+            <Value name="RICON_CURSOR_SCALE_LEFT_FILL" integer="71" desc="" />
+            <Value name="RICON_UNDO_FILL" integer="72" desc="" />
+            <Value name="RICON_REDO_FILL" integer="73" desc="" />
+            <Value name="RICON_REREDO_FILL" integer="74" desc="" />
+            <Value name="RICON_MUTATE_FILL" integer="75" desc="" />
+            <Value name="RICON_ROTATE_FILL" integer="76" desc="" />
+            <Value name="RICON_REPEAT_FILL" integer="77" desc="" />
+            <Value name="RICON_SHUFFLE_FILL" integer="78" desc="" />
+            <Value name="RICON_EMPTYBOX_SMALL" integer="79" desc="" />
+            <Value name="RICON_BOX" integer="80" desc="" />
+            <Value name="RICON_BOX_TOP" integer="81" desc="" />
+            <Value name="RICON_BOX_TOP_RIGHT" integer="82" desc="" />
+            <Value name="RICON_BOX_RIGHT" integer="83" desc="" />
+            <Value name="RICON_BOX_BOTTOM_RIGHT" integer="84" desc="" />
+            <Value name="RICON_BOX_BOTTOM" integer="85" desc="" />
+            <Value name="RICON_BOX_BOTTOM_LEFT" integer="86" desc="" />
+            <Value name="RICON_BOX_LEFT" integer="87" desc="" />
+            <Value name="RICON_BOX_TOP_LEFT" integer="88" desc="" />
+            <Value name="RICON_BOX_CENTER" integer="89" desc="" />
+            <Value name="RICON_BOX_CIRCLE_MASK" integer="90" desc="" />
+            <Value name="RICON_POT" integer="91" desc="" />
+            <Value name="RICON_ALPHA_MULTIPLY" integer="92" desc="" />
+            <Value name="RICON_ALPHA_CLEAR" integer="93" desc="" />
+            <Value name="RICON_DITHERING" integer="94" desc="" />
+            <Value name="RICON_MIPMAPS" integer="95" desc="" />
+            <Value name="RICON_BOX_GRID" integer="96" desc="" />
+            <Value name="RICON_GRID" integer="97" desc="" />
+            <Value name="RICON_BOX_CORNERS_SMALL" integer="98" desc="" />
+            <Value name="RICON_BOX_CORNERS_BIG" integer="99" desc="" />
+            <Value name="RICON_FOUR_BOXES" integer="100" desc="" />
+            <Value name="RICON_GRID_FILL" integer="101" desc="" />
+            <Value name="RICON_BOX_MULTISIZE" integer="102" desc="" />
+            <Value name="RICON_ZOOM_SMALL" integer="103" desc="" />
+            <Value name="RICON_ZOOM_MEDIUM" integer="104" desc="" />
+            <Value name="RICON_ZOOM_BIG" integer="105" desc="" />
+            <Value name="RICON_ZOOM_ALL" integer="106" desc="" />
+            <Value name="RICON_ZOOM_CENTER" integer="107" desc="" />
+            <Value name="RICON_BOX_DOTS_SMALL" integer="108" desc="" />
+            <Value name="RICON_BOX_DOTS_BIG" integer="109" desc="" />
+            <Value name="RICON_BOX_CONCENTRIC" integer="110" desc="" />
+            <Value name="RICON_BOX_GRID_BIG" integer="111" desc="" />
+            <Value name="RICON_OK_TICK" integer="112" desc="" />
+            <Value name="RICON_CROSS" integer="113" desc="" />
+            <Value name="RICON_ARROW_LEFT" integer="114" desc="" />
+            <Value name="RICON_ARROW_RIGHT" integer="115" desc="" />
+            <Value name="RICON_ARROW_DOWN" integer="116" desc="" />
+            <Value name="RICON_ARROW_UP" integer="117" desc="" />
+            <Value name="RICON_ARROW_LEFT_FILL" integer="118" desc="" />
+            <Value name="RICON_ARROW_RIGHT_FILL" integer="119" desc="" />
+            <Value name="RICON_ARROW_DOWN_FILL" integer="120" desc="" />
+            <Value name="RICON_ARROW_UP_FILL" integer="121" desc="" />
+            <Value name="RICON_AUDIO" integer="122" desc="" />
+            <Value name="RICON_FX" integer="123" desc="" />
+            <Value name="RICON_WAVE" integer="124" desc="" />
+            <Value name="RICON_WAVE_SINUS" integer="125" desc="" />
+            <Value name="RICON_WAVE_SQUARE" integer="126" desc="" />
+            <Value name="RICON_WAVE_TRIANGULAR" integer="127" desc="" />
+            <Value name="RICON_CROSS_SMALL" integer="128" desc="" />
+            <Value name="RICON_PLAYER_PREVIOUS" integer="129" desc="" />
+            <Value name="RICON_PLAYER_PLAY_BACK" integer="130" desc="" />
+            <Value name="RICON_PLAYER_PLAY" integer="131" desc="" />
+            <Value name="RICON_PLAYER_PAUSE" integer="132" desc="" />
+            <Value name="RICON_PLAYER_STOP" integer="133" desc="" />
+            <Value name="RICON_PLAYER_NEXT" integer="134" desc="" />
+            <Value name="RICON_PLAYER_RECORD" integer="135" desc="" />
+            <Value name="RICON_MAGNET" integer="136" desc="" />
+            <Value name="RICON_LOCK_CLOSE" integer="137" desc="" />
+            <Value name="RICON_LOCK_OPEN" integer="138" desc="" />
+            <Value name="RICON_CLOCK" integer="139" desc="" />
+            <Value name="RICON_TOOLS" integer="140" desc="" />
+            <Value name="RICON_GEAR" integer="141" desc="" />
+            <Value name="RICON_GEAR_BIG" integer="142" desc="" />
+            <Value name="RICON_BIN" integer="143" desc="" />
+            <Value name="RICON_HAND_POINTER" integer="144" desc="" />
+            <Value name="RICON_LASER" integer="145" desc="" />
+            <Value name="RICON_COIN" integer="146" desc="" />
+            <Value name="RICON_EXPLOSION" integer="147" desc="" />
+            <Value name="RICON_1UP" integer="148" desc="" />
+            <Value name="RICON_PLAYER" integer="149" desc="" />
+            <Value name="RICON_PLAYER_JUMP" integer="150" desc="" />
+            <Value name="RICON_KEY" integer="151" desc="" />
+            <Value name="RICON_DEMON" integer="152" desc="" />
+            <Value name="RICON_TEXT_POPUP" integer="153" desc="" />
+            <Value name="RICON_GEAR_EX" integer="154" desc="" />
+            <Value name="RICON_CRACK" integer="155" desc="" />
+            <Value name="RICON_CRACK_POINTS" integer="156" desc="" />
+            <Value name="RICON_STAR" integer="157" desc="" />
+            <Value name="RICON_DOOR" integer="158" desc="" />
+            <Value name="RICON_EXIT" integer="159" desc="" />
+            <Value name="RICON_MODE_2D" integer="160" desc="" />
+            <Value name="RICON_MODE_3D" integer="161" desc="" />
+            <Value name="RICON_CUBE" integer="162" desc="" />
+            <Value name="RICON_CUBE_FACE_TOP" integer="163" desc="" />
+            <Value name="RICON_CUBE_FACE_LEFT" integer="164" desc="" />
+            <Value name="RICON_CUBE_FACE_FRONT" integer="165" desc="" />
+            <Value name="RICON_CUBE_FACE_BOTTOM" integer="166" desc="" />
+            <Value name="RICON_CUBE_FACE_RIGHT" integer="167" desc="" />
+            <Value name="RICON_CUBE_FACE_BACK" integer="168" desc="" />
+            <Value name="RICON_CAMERA" integer="169" desc="" />
+            <Value name="RICON_SPECIAL" integer="170" desc="" />
+            <Value name="RICON_LINK_NET" integer="171" desc="" />
+            <Value name="RICON_LINK_BOXES" integer="172" desc="" />
+            <Value name="RICON_LINK_MULTI" integer="173" desc="" />
+            <Value name="RICON_LINK" integer="174" desc="" />
+            <Value name="RICON_LINK_BROKE" integer="175" desc="" />
+            <Value name="RICON_TEXT_NOTES" integer="176" desc="" />
+            <Value name="RICON_NOTEBOOK" integer="177" desc="" />
+            <Value name="RICON_SUITCASE" integer="178" desc="" />
+            <Value name="RICON_SUITCASE_ZIP" integer="179" desc="" />
+            <Value name="RICON_MAILBOX" integer="180" desc="" />
+            <Value name="RICON_MONITOR" integer="181" desc="" />
+            <Value name="RICON_PRINTER" integer="182" desc="" />
+            <Value name="RICON_PHOTO_CAMERA" integer="183" desc="" />
+            <Value name="RICON_PHOTO_CAMERA_FLASH" integer="184" desc="" />
+            <Value name="RICON_HOUSE" integer="185" desc="" />
+            <Value name="RICON_HEART" integer="186" desc="" />
+            <Value name="RICON_CORNER" integer="187" desc="" />
+            <Value name="RICON_VERTICAL_BARS" integer="188" desc="" />
+            <Value name="RICON_VERTICAL_BARS_FILL" integer="189" desc="" />
+            <Value name="RICON_LIFE_BARS" integer="190" desc="" />
+            <Value name="RICON_INFO" integer="191" desc="" />
+            <Value name="RICON_CROSSLINE" integer="192" desc="" />
+            <Value name="RICON_HELP" integer="193" desc="" />
+            <Value name="RICON_FILETYPE_ALPHA" integer="194" desc="" />
+            <Value name="RICON_FILETYPE_HOME" integer="195" desc="" />
+            <Value name="RICON_LAYERS_VISIBLE" integer="196" desc="" />
+            <Value name="RICON_LAYERS" integer="197" desc="" />
+            <Value name="RICON_WINDOW" integer="198" desc="" />
+            <Value name="RICON_HIDPI" integer="199" desc="" />
+            <Value name="RICON_200" integer="200" desc="" />
+            <Value name="RICON_201" integer="201" desc="" />
+            <Value name="RICON_202" integer="202" desc="" />
+            <Value name="RICON_203" integer="203" desc="" />
+            <Value name="RICON_204" integer="204" desc="" />
+            <Value name="RICON_205" integer="205" desc="" />
+            <Value name="RICON_206" integer="206" desc="" />
+            <Value name="RICON_207" integer="207" desc="" />
+            <Value name="RICON_208" integer="208" desc="" />
+            <Value name="RICON_209" integer="209" desc="" />
+            <Value name="RICON_210" integer="210" desc="" />
+            <Value name="RICON_211" integer="211" desc="" />
+            <Value name="RICON_212" integer="212" desc="" />
+            <Value name="RICON_213" integer="213" desc="" />
+            <Value name="RICON_214" integer="214" desc="" />
+            <Value name="RICON_215" integer="215" desc="" />
+            <Value name="RICON_216" integer="216" desc="" />
+            <Value name="RICON_217" integer="217" desc="" />
+            <Value name="RICON_218" integer="218" desc="" />
+            <Value name="RICON_219" integer="219" desc="" />
+            <Value name="RICON_220" integer="220" desc="" />
+            <Value name="RICON_221" integer="221" desc="" />
+            <Value name="RICON_222" integer="222" desc="" />
+            <Value name="RICON_223" integer="223" desc="" />
+            <Value name="RICON_224" integer="224" desc="" />
+            <Value name="RICON_225" integer="225" desc="" />
+            <Value name="RICON_226" integer="226" desc="" />
+            <Value name="RICON_227" integer="227" desc="" />
+            <Value name="RICON_228" integer="228" desc="" />
+            <Value name="RICON_229" integer="229" desc="" />
+            <Value name="RICON_230" integer="230" desc="" />
+            <Value name="RICON_231" integer="231" desc="" />
+            <Value name="RICON_232" integer="232" desc="" />
+            <Value name="RICON_233" integer="233" desc="" />
+            <Value name="RICON_234" integer="234" desc="" />
+            <Value name="RICON_235" integer="235" desc="" />
+            <Value name="RICON_236" integer="236" desc="" />
+            <Value name="RICON_237" integer="237" desc="" />
+            <Value name="RICON_238" integer="238" desc="" />
+            <Value name="RICON_239" integer="239" desc="" />
+            <Value name="RICON_240" integer="240" desc="" />
+            <Value name="RICON_241" integer="241" desc="" />
+            <Value name="RICON_242" integer="242" desc="" />
+            <Value name="RICON_243" integer="243" desc="" />
+            <Value name="RICON_244" integer="244" desc="" />
+            <Value name="RICON_245" integer="245" desc="" />
+            <Value name="RICON_246" integer="246" desc="" />
+            <Value name="RICON_247" integer="247" desc="" />
+            <Value name="RICON_248" integer="248" desc="" />
+            <Value name="RICON_249" integer="249" desc="" />
+            <Value name="RICON_250" integer="250" desc="" />
+            <Value name="RICON_251" integer="251" desc="" />
+            <Value name="RICON_252" integer="252" desc="" />
+            <Value name="RICON_253" integer="253" desc="" />
+            <Value name="RICON_254" integer="254" desc="" />
+            <Value name="RICON_255" integer="255" desc="" />
+        </Enum>
+        <Enum name="" valueCount="0" desc="">
+        </Enum>
+    </Enums>
+    <Functions count="0">
+    </Functions>
+</raylibAPI>
