@@ -39,7 +39,7 @@ function main()
         )
     end
 
-    Raylib.SetCameraMode(camera, 3)
+    Raylib.SetCameraMode(camera, Int(Raylib.CAMERA_FIRST_PERSON))
     Raylib.SetTargetFPS(60)
 
     while !Raylib.WindowShouldClose()
