@@ -248,7 +248,7 @@ function main()
         end
 
         if Raylib.IsKeyPressed(Raylib.KEY_C)
-            cameraOption = mod1(cameraOption, cameraUpdatersLength)
+            cameraOption = mod1(cameraOption+1, cameraUpdatersLength)
         end
 
         # Call update camera function by its pointer
