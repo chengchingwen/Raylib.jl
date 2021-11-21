@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="Windows-1252" ?>
+<raylibAPI>
+    <Enums count="20">
+        <Enum name="Vector2" valueCount="0" desc="">
+        </Enum>
+        <Enum name="GuiControlState" valueCount="4" desc="">
+            <Value name="GUI_STATE_NORMAL" integer="0" desc="" />
+            <Value name="GUI_STATE_FOCUSED" integer="1" desc="" />
+            <Value name="GUI_STATE_PRESSED" integer="2" desc="" />
+            <Value name="GUI_STATE_DISABLED" integer="3" desc="" />
+        </Enum>
+    </Enums>
+</raylibAPI>
