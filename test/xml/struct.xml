@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="Windows-1252" ?>
-<raylibAPI>
-    <Structs count="8">
-        <Struct name="Vector2" fieldCount="2" desc="">
-            <Field type="float" name="x" desc="" />
-            <Field type="float" name="y" desc="" />
-        </Struct>
-    </Structs>
-</raylibAPI>
