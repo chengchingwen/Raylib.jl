@@ -1,7 +1,6 @@
 module Binding
 
-include("./xml.jl")
-include("./gen.jl")
-
+include("xml.jl")
+include("gen.jl")
 
 end
