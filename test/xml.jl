@@ -1,5 +1,5 @@
 @testset "parse xml" begin
-    struct_root = Raylib.parse(joinpath(@__DIR__, "xml/struct.xml"))
+    struct_root = Raylib.Binding.parse(joinpath(@__DIR__, "xml/struct.xml"))
     @test struct_root == Dict{Symbol, Any}(
         :raylibAPI => Dict{Symbol, Any}(
             :Structs => Dict{Symbol, Any}(
@@ -18,7 +18,7 @@
         )
     )
 
-    enum_root = Raylib.parse(joinpath(@__DIR__, "xml/enum.xml"))
+    enum_root = Raylib.Binding.parse(joinpath(@__DIR__, "xml/enum.xml"))
     @test enum_root == Dict{Symbol, Any}(
         :raylibAPI => Dict{Symbol, Any}(
             :Enums => Dict{Symbol, Any}(
@@ -42,7 +42,7 @@
         )
     )
 
-    func_root = Raylib.parse(joinpath(@__DIR__, "xml/function.xml"))
+    func_root = Raylib.Binding.parse(joinpath(@__DIR__, "xml/function.xml"))
     @test func_root == Dict{Symbol, Any}(
         :raylibAPI => Dict{Symbol, Any}(
             :Functions => Dict{Symbol, Any}(

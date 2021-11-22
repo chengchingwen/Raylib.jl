@@ -13,6 +13,6 @@ include("textures.jl")
 include("text.jl")
 include("models.jl")
 include("audio.jl")
-include("xml.jl")
+include("binding/binding.jl")
 
 end
