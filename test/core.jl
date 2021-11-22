@@ -17,7 +17,7 @@ function test_camera(camera::Raylib.RayCamera3D, ans::Vector)
     ])
 end
 
-@testset "set camera properties" begin
+@testset "set camera properties 2d" begin
     camera = Raylib.RayCamera2D(
         Raylib.rayvector(1, 2), # camera offset
         Raylib.rayvector(3, 4), # camera target
@@ -41,7 +41,9 @@ end
         45,
         3
     ])
+end
 
+@testset "set camera properties 3d" begin
     camera = Raylib.RayCamera3D(
         Raylib.rayvector(0, 10, 10), # camera position
         Raylib.rayvector(0, 0, 0), # camera looking at point
@@ -93,5 +95,15 @@ end
         Raylib.rayvector(4, 5, 6),
         60,
         Raylib.CAMERA_ORTHOGRAPHIC
+    ])
+
+    Raylib.SetCameraMode(camera, Int(Raylib.CAMERA_FIRST_PERSON))
+    camera = Raylib.UpdateCamera(camera)
+    @test !test_camera(camera, [
+        Raylib.rayvector(1, 2, 3),
+        Raylib.rayvector(3, 2, 1),
+        Raylib.rayvector(4, 5, 6),
+        60,
+        Raylib.CAMERA_FIRST_PERSON
     ])
 end
