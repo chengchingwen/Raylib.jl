@@ -5,7 +5,7 @@ const easings_api = Raylib.Binding.parse(
 for func in easings_api[:raylibAPI][:Functions][:Function]
     name = Symbol(func[:attr].name)
     if isdefined(@__MODULE__, name)
-        @info "duplicat $name from $lib. skip"
+        @info "duplicat $name from easings. skip"
         continue
     end
 
@@ -16,7 +16,7 @@ for func in easings_api[:raylibAPI][:Functions][:Function]
         try
             @eval $expr
         catch
-            @show lib, expr
+            @show "easings", expr
         end
     end
 end
