@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="Windows-1252" ?>
+<raylibAPI>
+    <Functions count="487">
+        <Function name="InitWindow" retType="void" paramCount="3" desc="Initialize window and OpenGL context">
+            <Param type="int" name="width" desc="" />
+            <Param type="int" name="height" desc="" />
+            <Param type="const char *" name="title" desc="" />
+        </Function>
+        <Function name="WindowShouldClose" retType="bool" paramCount="0" desc="Check if KEY_ESCAPE pressed or Close icon pressed">
+        </Function>
+        <Function name="CloseWindow" retType="void" paramCount="0" desc="Close window and unload OpenGL context">
+        </Function>
+        <Function name="IsWindowReady" retType="bool" paramCount="0" desc="Check if window has been initialized successfully">
+        </Function>
+    </Functions>
+</raylibAPI>
