@@ -1,3 +1,5 @@
+using ..Raylib: RayVector2, RayVector3, RayVector4, RayMatrix
+
 maybe(f, x) = f(x)
 maybe(f, ::Nothing) = nothing
 maybe(f) = Base.Fix1(maybe, f)
@@ -76,6 +78,14 @@ const typemap_dict = Dict{String, Any}(
     "unsigned long long" => (:Culonglong, :Integer),
     "unsigned short"     => (:Cushort, :Integer),
     "bool"               => (:Cuchar, :Bool, :Bool),
+
+    "Vector2" => :RayVector2,
+    "Vector3" => :RayVector3,
+    "Vector4" => :RayVector4,
+    "Matrix" => :RayMatrix,
+    "Quaternion" => :RayVector4,
+    "float3" => :(NTuple{3, Cfloat}),
+    "float16" => :(NTuple{16, Cfloat}),
 )
 
 function gen_enum(def)

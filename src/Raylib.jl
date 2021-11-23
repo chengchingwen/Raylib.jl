@@ -13,7 +13,9 @@ include("textures.jl")
 include("text.jl")
 include("models.jl")
 include("audio.jl")
+
 include("binding/binding.jl")
 include("easing.jl")
+include("raymath.jl")
 
 end
