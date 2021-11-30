@@ -1,16 +1,19 @@
 module Binding
 
 using CEnum
+using StaticArrays
 
-import ..Raylib: RayColor
+import ..Raylib: RayColor, RayVector2, RayVector3, RayVector4, RayQuaternion,
+    RayMatrix, RayMatrix2x2, RayCamera, RayCamera2D, RayCamera3D
+
 
 map(
     f->include_dependency(joinpath(@__DIR__, "../../api_reference/", f)),
     ("raylib_api.xml", "raygui_api.xml", "raymath_api.xml", "physac_api.xml")
 )
 
-include("../enum.jl")
-include("../struct.jl")
+include("./enum.jl")
+include("./struct.jl")
 
 let
     parse_xml(f) = open(f) do io

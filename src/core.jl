@@ -1,18 +1,11 @@
-const core_api_file = joinpath(dirname(@__DIR__), "api_reference/core.txt")
-
-for line in eachline(core_api_file)
-    (startswith(strip(line), "//") || isempty(line)) && continue
-    @eval @declaration_str $line
-end
-
 """
     UpdateCamera(camera::RayCamera3D)
 
 Return new camera with updated parameter.
 """
-function UpdateCamera(camera::RayCamera3D)
+function Binding.UpdateCamera(camera::RayCamera3D)
     new_camera_ref = Ref(camera)
-    Raylib.UpdateCamera(new_camera_ref)
+    UpdateCamera(new_camera_ref)
 
     return new_camera_ref[]
 end
@@ -24,7 +17,7 @@ Update camera position for selected mode
 """
 function UpdateCamera!(camera::RayCamera3D)
     camera_ptr = convert(Ptr{RayCamera3D}, pointer_from_objref(camera))
-    Raylib.UpdateCamera(camera_ptr)
+    UpdateCamera(camera_ptr)
     return camera
 end
 
@@ -33,7 +26,7 @@ end
 
 Return a list of dropped file paths.
 """
-function GetDroppedFiles()
+function Binding.GetDroppedFiles()
     count = Ref{Cint}(0)
     fptrs = GetDroppedFiles(count)
     fcstr = Base.unsafe_wrap(Vector{Cstring}, fptrs, count[])
@@ -68,5 +61,5 @@ Base.pointer(fdata::RayFileData) = pointer(fdata.data)
 for func in :(
     IsKeyDown, IsKeyPressed, IsKeyReleased, IsKeyUp
 ).args
-    @eval $func(k::KeyboardKey) = $func(convert(Integer, k))
+    @eval Binding.$func(k::KeyboardKey) = $func(convert(Integer, k))
 end

@@ -1,7 +1,7 @@
-using Colors
-using Colors: N0f8
+import Colors
+using Colors: RGBA, N0f8
 
-const RayColor = RGBA{Colors.N0f8}
+const RayColor = RGBA{N0f8}
 
 raycolor(rgba...) = RayColor(map(Base.Fix1(reinterpret, N0f8)∘Cuchar, rgba)...)
 
