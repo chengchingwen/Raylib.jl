@@ -4,6 +4,11 @@ using CEnum
 
 import ..Raylib: RayColor
 
+map(
+    f->include_dependency(joinpath(@__DIR__, "../../api_reference/", f)),
+    ("raylib_api.xml", "raygui_api.xml", "raymath_api.xml", "physac_api.xml")
+)
+
 include("../enum.jl")
 include("../struct.jl")
 
@@ -230,8 +235,8 @@ let
         jl_typemap(iscst, type_name, nptr) = x_typemap(2, iscst, type_name, nptr)
         jlret_typemap(iscst, type_name, nptr) = x_typemap(3, iscst, type_name, nptr)
 
-        parse_c_type(s) = c_typemap(parse_type(s)...)
-        parse_jl_type(s) = jl_typemap(parse_type(s)...)
+        parse_c_type(s) = maybe(x->c_typemap(x...), parse_type(s))
+        parse_jl_type(s) = maybe(x->jl_typemap(x...), parse_type(s))
 
         valid_name(s) = (m = match(r"^[_a-zA-Z][_a-zA-Z0-9]*$", s); isnothing(m) ? nothing : Symbol(s))
 
@@ -280,6 +285,11 @@ let
         jl_type_handler(x::Symbol, ex) = jl_type_handler(eval(x), ex)
         jl_type_handler(::Type{String}, ex) = :(Base.unsafe_string($ex))
 
+        function func_doc(code, desc)
+            code_s = replace(string(code), '\n'=>"\n    ")
+            return "    $code_s\n\n$desc"
+        end
+
         function gen_func(def, use_desc=true)
             attr = def[:attr]
             name = Symbol(attr.name)
@@ -288,7 +298,7 @@ let
             pcount = Base.parse(Int, attr.paramCount)
             params = iszero(pcount) ? () : def[:Param]
 
-            c_param_ex = if iszero(pcount)
+            c_param_ex = if !iszero(pcount)
                 map(params) do p
                     T = parse_c_type(p.type)
                     vname = valid_name(p.name)
@@ -301,7 +311,7 @@ let
 
             (any(isnothing, c_param_ex) || isnothing(c_rT)) && return nothing
 
-            jl_param_ex = if iszero(pcount)
+            jl_param_ex = if !iszero(pcount)
                 map(params) do p
                     T = parse_jl_type(p.type)
                     typeassert_expr(Symbol(p.name), T)
@@ -331,7 +341,7 @@ let
             func_body = Expr(:return, jl_type_handler(jl_rT, call_ex))
             func_def = Expr(:function, jl_sig, func_body)
 
-            docstring = "    $func_def\n\n$desc"
+            docstring = func_doc(func_def, desc)
             return quote
                 Core.@doc $docstring
                 $func_def
@@ -352,7 +362,7 @@ let
                     name = nf(entry[:attr].name)
 
                     if isdefined(@__MODULE__, name)
-                        @debug "duplicate $name from $lib. skip"
+                        @debug "skip duplicate $name from $lib."
                         continue
                     end
                     expr = f(entry)
