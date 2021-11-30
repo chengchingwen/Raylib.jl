@@ -1,4 +1,5 @@
 module Binding
+using Raylib_jll
 
 using CEnum
 using StaticArrays

@@ -172,6 +172,3 @@ end
         return setfield!(x, name, convert(fieldtype(RayCamera2D, name), v))
     end
 end
-
-
-
