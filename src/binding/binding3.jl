@@ -127,7 +127,7 @@ let
             "unsigned short"     => (:Cushort, :Integer),
             "bool"               => (:Cuchar, :Bool, :Bool),
             "float3"             => :(NTuple{3, Cfloat}),
-            "float16"             => :(NTuple{16, Cfloat}),
+            "float16"            => :(NTuple{16, Cfloat}),
             "Color"              => :RayColor,
             "Camera"             => :RayCamera3D,
             "Camera3D"           => :RayCamera3D,
@@ -161,10 +161,10 @@ let
             "VrStereoConfig"     => :RayVrStereoConfig,
             "Matrix"             => :RayMatrix,
             "Matrix2x2"          => :RayMatrix2x2,
-            "Vector2"            => :RayVector2,
-            "Vector3"            => :RayVector3,
-            "Vector4"            => :RayVector4,
-            "Quaternion"         => :RayVector4,
+            "Vector2"            => (:RayVector2, :(StaticVector{2})),
+            "Vector3"            => (:RayVector3, :(StaticVector{3})),
+            "Vector4"            => (:RayVector4, :(StaticVector{4})),
+            "Quaternion"         => (:RayVector4, :(StaticVector{4})),
             "GuiStyleProp"       => :RayGuiStyleProp,
             "PhysicsShapeType"   => :PhysicsShapeType,
             "PhysicsVertexData"  => :RayPhysicsVertexData,
@@ -210,7 +210,7 @@ let
                 get_type(x, type_name, i)
             end
 
-            if isnothing(T)
+            if isnothing(T) && i <= 2
                 @debug "\ttypemap $type_name not found"
             end
             return T
@@ -237,6 +237,7 @@ let
 
         parse_c_type(s) = maybe(x->c_typemap(x...), parse_type(s))
         parse_jl_type(s) = maybe(x->jl_typemap(x...), parse_type(s))
+        parse_jlret_type(s) = maybe(x->jlret_typemap(x...), parse_type(s))
 
         valid_name(s) = (m = match(r"^[_a-zA-Z][_a-zA-Z0-9]*$", s); isnothing(m) ? nothing : Symbol(s))
 
@@ -319,7 +320,7 @@ let
             else
                 Expr[]
             end
-            jl_rT = parse_jl_type(rT)
+            jl_rT = parse_jlret_type(rT)
 
             c_sig = typeassert_expr(
                 Expr(
@@ -331,13 +332,9 @@ let
             )
             call_ex = Expr(:macrocall, Symbol("@ccall"),  nothing, c_sig)
 
-            jl_sig = typeassert_expr(
-                Expr(
-                    :call, name,
-                    jl_param_ex...
-                ),
-                jl_rT
-            )
+            jl_call = Expr(:call, name, jl_param_ex...)
+            jl_sig = isnothing(jl_rT) ? jl_call : typeassert_expr(jl_call, jl_rT)
+
             func_body = Expr(:return, jl_type_handler(jl_rT, call_ex))
             func_def = Expr(:function, jl_sig, func_body)
 
