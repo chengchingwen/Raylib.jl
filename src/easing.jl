@@ -188,7 +188,7 @@ function EaseElasticIn(t::Real, b::Real, c::Real, d::Real)
 end
 function EaseElasticOut(t::Real, b::Real, c::Real, d::Real)
     iszero(t) && (return b)
-    isone(t/=d) && (return b + c)
+    isone(t /= d) && (return b + c)
 
     p = 0.3d
     a = c
@@ -198,5 +198,17 @@ function EaseElasticOut(t::Real, b::Real, c::Real, d::Real)
 end
 function EaseElasticInOut(t::Real, b::Real, c::Real, d::Real)
     iszero(t) && (return b)
-    
+    ((t /= d/2) == 2) && (return b + c)
+
+    p = d * 0.3 * 1.5
+    a = c
+    s = p/4
+
+    if t < 1
+        postFix = a * 2^(10(t -= 1))
+        return -0.5(postFix * sin((t*d - s) * 2π/p)) + b
+    end
+
+    postFix = a * 2^(-10(t -= 1))
+    return postFix * sin((t*d - s) * 2π/p) / 2 + c + b
 end
