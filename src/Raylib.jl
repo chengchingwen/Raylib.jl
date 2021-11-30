@@ -14,4 +14,6 @@ include("text.jl")
 include("models.jl")
 include("audio.jl")
 
+include("easing.jl")
+
 end

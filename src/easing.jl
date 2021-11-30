@@ -25,7 +25,7 @@ EaseLinearInOut(t::Real, b::Real, c::Real, d::Real) = EaseLinearNone(t, b, c, d)
 
 EaseSineIn(t::Real, b::Real, c::Real, d::Real) = -c * cos(t/d * (π/2)) + c + b
 
-EaseSineOut(t::Real, b::Real, c::Real, d::Real) = c * sinf(t/d * (π/2)) + b
+EaseSineOut(t::Real, b::Real, c::Real, d::Real) = c * sin(t/d * (π/2)) + b
 
 EaseSineInOut(t::Real, b::Real, c::Real, d::Real) = -c/2 * (cos(π * t/d) - 1) + b
 
@@ -110,17 +110,17 @@ end
 # ################################
 
 function EaseExpoIn(t::Real, b::Real, c::Real, d::Real)
-    return iszero(t) ? b : c * 2^(10(t/d - 1)) + b
+    return (t ≈ 0) ? b : c * 2^(10(t/d - 1)) + b
 end
 
 function EaseExpoOut(t::Real, b::Real, c::Real, d::Real)
-    return iszero(t-d) ? b+c : c * (-(2.0^(-10 * t/d)) + 1) + b
+    return t ≈ d ? b+c : c * (-(2.0^(-10 * t/d)) + 1) + b
 end
 
 function EaseExpoInOut(t::Real, b::Real, c::Real, d::Real)
-    if iszero(t)
+    if t ≈ 0
         return b
-    elseif iszero(t-d)
+    elseif t ≈ d
         return b + c
     elseif (t /= d/2) < 1
         return c/2 * 2^(10(t - 1)) + b
@@ -197,8 +197,8 @@ end
 # ############################
 
 function EaseElasticIn(t::Real, b::Real, c::Real, d::Real)
-    iszero(t) && (return b)
-    isone(t/=d) && (return b + c)
+    (t ≈ 0) && (return b)
+    ((t/=d) ≈ 1) && (return b + c)
 
     p = 0.3d
     a = c
@@ -209,8 +209,8 @@ function EaseElasticIn(t::Real, b::Real, c::Real, d::Real)
 end
 
 function EaseElasticOut(t::Real, b::Real, c::Real, d::Real)
-    iszero(t) && (return b)
-    isone(t /= d) && (return b + c)
+    (t ≈ 0) && (return b)
+    ((t /= d) ≈ 1) && (return b + c)
 
     p = 0.3d
     a = c
@@ -220,8 +220,8 @@ function EaseElasticOut(t::Real, b::Real, c::Real, d::Real)
 end
 
 function EaseElasticInOut(t::Real, b::Real, c::Real, d::Real)
-    iszero(t) && (return b)
-    ((t /= d/2) == 2) && (return b + c)
+    (t ≈ 0) && (return b)
+    ((t /= d/2) ≈ 2) && (return b + c)
 
     p = d * 0.3 * 1.5
     a = c
