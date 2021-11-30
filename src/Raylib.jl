@@ -10,6 +10,6 @@ include("binding/binding.jl")
 using .Binding
 
 include("core.jl")
-include("shape.jl")
+include("shapes.jl")
 
 end
