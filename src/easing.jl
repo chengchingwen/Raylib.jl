@@ -198,7 +198,8 @@ end
 
 function EaseElasticIn(t::Real, b::Real, c::Real, d::Real)
     (t ≈ 0) && (return b)
-    ((t/=d) ≈ 1) && (return b + c)
+    (t ≈ d) && (return b + c)
+    t /= d
 
     p = 0.3d
     a = c
