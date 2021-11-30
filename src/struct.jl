@@ -27,6 +27,7 @@ rayvector(v::Vararg{<:Real, 3}) = RayVector3(v)
 rayvector(v::Vararg{<:Real, 4}) = RayVector4(v)
 
 const RayMatrix = SMatrix{4, 4, Cfloat, 16}
+const RayMatrix2x2 = SMatrix{2, 2, Cfloat, 4}
 
 mutable struct RayCamera3D
     #position::RayVector3  # Camera position
@@ -48,6 +49,8 @@ mutable struct RayCamera3D
                           #   used as near plane width in orthographic
     projection::Cint      # Camera projection: CAMERA_PERSPECTIVE or CAMERA_ORTHOGRAPHIC
 end
+
+const RayCamera = RayCamera3D
 
 RayCamera3D(position::RayVector3, target::RayVector3, up::RayVector3, fovy, projection) =
     RayCamera3D(position..., target..., up..., fovy, projection)
@@ -197,11 +200,16 @@ struct RayTexture
     format::Cint     # Data format (PixelFormat type)
 end
 
+const RayTexture2D = RayTexture
+const RayTextureCubemap = RayTexture
+
 struct RayRenderTexture
     id::Cuint                # OpenGL framebuffer object id
     texture::RayTexture      # Color buffer attachment texture
     depth::RayTexture        # Depth buffer attachment texture
 end
+
+const RayRenderTexture2D = RayRenderTexture
 
 struct RayNPatchInfo
     source::RayRectangle     # Texture source rectangle
@@ -374,4 +382,62 @@ struct RayVrStereoConfig
     rightScreenCenter::NTuple{2, Cfloat}       # VR right screen center
     scale::NTuple{2, Cfloat}                   # VR distortion scale
     scaleIn::NTuple{2, Cfloat}                 # VR distortion scale in
+end
+
+struct RayGuiStyleProp
+    controlId::Cushort
+    propertyId::Cushort
+    propertyValue::Cint
+end
+
+const PHYSAC_MAX_VERTICES = 24
+
+struct RayPhysicsVertexData
+    vertexCount::Cuint                                 # Vertex count (positions and normals)
+    positions::NTuple{PHYSAC_MAX_VERTICES, RayVector2} # Vertex positions vectors
+    normals::NTuple{PHYSAC_MAX_VERTICES, RayVector2}   # Vertex normals vectors
+end
+
+struct RayPhysicsShape
+    type::PhysicsShapeType                      # Shape type (circle or polygon)
+    # body::Ptr{RayPhysicsBodyData}
+    body::Ptr{Cvoid}                            # Shape physics body data pointer
+    vertexData::RayPhysicsVertexData            # Shape vertices data (used for polygon shapes)
+    radius::Cfloat                              # Shape radius (used for circle shapes)
+    transform::RayMatrix2x2                     # Vertices transform matrix 2x2
+end
+
+struct RayPhysicsBodyData
+    id::Cuint                            # Unique identifier
+    enabled::Bool                        # Enabled dynamics state (collisions are calculated anyway)
+    position::RayVector2                 # Physics body shape pivot
+    velocity::RayVector2                 # Current linear velocity applied to position
+    force::RayVector2                    # Current linear force (reset to 0 every step)
+    angularVelocity::Cfloat              # Current angular velocity applied to orient
+    torque::Cfloat                       # Current angular force (reset to 0 every step)
+    orient::Cfloat                       # Rotation in radians
+    inertia::Cfloat                      # Moment of inertia
+    inverseInertia::Cfloat               # Inverse value of inertia
+    mass::Cfloat                         # Physics body mass
+    inverseMass::Cfloat                  # Inverse value of mass
+    staticFriction::Cfloat               # Friction when the body has not movement (0 to 1)
+    dynamicFriction::Cfloat              # Friction when the body has movement (0 to 1)
+    restitution::Cfloat                  # Restitution coefficient of the body (0 to 1)
+    useGravity::Bool                     # Apply gravity force to dynamics
+    isGrounded::Bool                     # Physics grounded on other body state
+    freezeOrient::Bool                   # Physics rotation constraint
+    shape::RayPhysicsShape               # Physics body shape information (type, radius, vertices, transform)
+end
+
+struct RayPhysicsManifoldData
+    id::Cuint                            # Unique identifier
+    bodyA::Ptr{RayPhysicsBodyData}       # Manifold first physics body reference
+    bodyB::Ptr{RayPhysicsBodyData}       # Manifold second physics body reference
+    penetration::Cfloat                  # Depth of penetration from collision
+    normal::RayVector2                   # Normal direction vector from 'a' to 'b'
+    contacts::NTuple{2, RayVector2}      # Points of contact during collision
+    contactsCount::Cuint                 # Current collision number of contacts
+    restitution::Cfloat                  # Mixed restitution during collision
+    dynamicFriction::Cfloat              # Mixed dynamic friction during collision
+    staticFriction::Cfloat               # Mixed static friction during collision
 end

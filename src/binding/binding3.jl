@@ -2,6 +2,16 @@ module Binding
 
 using CEnum
 
+# using ..Raylib: RayVector2, RayVector3, RayVector4, RayMatrix,
+#     RayColor, RayCamera, RayCamera2D, RayCamera3D,
+#     RayTexture, RayTexture2D, RayTextureCubemap,
+#     RayRenderTexture, RayRenderTexture2D,
+#     RayMaterial, RayBoneInfo
+using ..Raylib: RayColor
+
+include("./enum.jl")
+include("../struct.jl")
+
 let
     parse_xml(f) = open(f) do io
         function parse_data(pairs)
@@ -140,8 +150,8 @@ let
             "BoneInfo"           => :RayBoneInfo,
             "Model"              => :RayModel,
             "ModelAnimation"     => :RayModelAnimation,
-            "Ray"                => :RayRay,
-            "RayCollision"       => :RayRayCollision,
+            "Ray"                => :Ray,
+            "RayCollision"       => :RayCollision,
             "BoundingBox"        => :RayBoundingBox,
             "Wave"               => :RayWave,
             "AudioStream"        => :RayAudioStream,
@@ -150,14 +160,19 @@ let
             "VrDeviceInfo"       => :RayVrDeviceInfo,
             "VrStereoConfig"     => :RayVrStereoConfig,
             "Matrix"             => :RayMatrix,
+            "Matrix2x2"          => :RayMatrix2x2,
             "Vector2"            => :RayVector2,
             "Vector3"            => :RayVector3,
             "Vector4"            => :RayVector4,
             "Quaternion"         => :RayVector4,
+            "GuiStyleProp"       => :RayGuiStyleProp,
+            "PhysicsShapeType"   => :PhysicsShapeType,
+            "PhysicsVertexData"  => :RayPhysicsVertexData,
+            "PhysicsShape"       => :RayPhysicsShape,
             "PhysicsBodyData"    => :RayPhysicsBodyData,
             "PhysicsBody"        => :(Ptr{RayPhysicsBodyData}),
-            "MemPool"            => :RayMemPool,
         )
+
         maybe(f, x) = f(x)
         maybe(f, ::Nothing) = nothing
         maybe(f) = Base.Fix1(maybe, f)
@@ -195,6 +210,9 @@ let
                 get_type(x, type_name, i)
             end
 
+            if isnothing(T)
+                @debug "\ttypemap $type_name not found"
+            end
             return T
         end
 
@@ -206,12 +224,21 @@ let
             T = x_typemap(i, iscst, type_name, nothing)
             isnothing(T) && return nothing
 
-            isabs = isabstracttype(eval(T))
+            isabs = try
+                isabstracttype(eval(T))
+            catch
+                return nothing
+            end
             return isone(i) ? nested_ptr(T, nptr, isabs) : nested_refptr(T, nptr, isabs)
         end
         c_typemap(iscst, type_name, nptr) = x_typemap(1, iscst, type_name, nptr)
         jl_typemap(iscst, type_name, nptr) = x_typemap(2, iscst, type_name, nptr)
         jlret_typemap(iscst, type_name, nptr) = x_typemap(3, iscst, type_name, nptr)
+
+        parse_c_type(s) = c_typemap(parse_type(s)...)
+        parse_jl_type(s) = jl_typemap(parse_type(s)...)
+
+        valid_name(s) = (m = match(r"^[_a-zA-Z][_a-zA-Z0-9]*$", s); isnothing(m) ? nothing : Symbol(s))
 
         function gen_enum(def)
             attr = def[:attr]
@@ -243,8 +270,12 @@ let
             fields = def[:Field]
 
             fields_ex = map(fields) do f
-                typeassert_expr(Symbol(f.name), c_typemap(parse_type(f.type)...))
+                T = parse_c_type(f.type)
+                vname = valid_name(f.name)
+                isnothing(T) || isnothing(vname) ? nothing : typeassert_expr(vname, T)
             end
+            any(isnothing, fields_ex) && return nothing
+
             body = Expr(:block, fields_ex...)
             name_ex = Symbol("Ray$name")
             Expr(:struct, false, name_ex, body)
@@ -264,21 +295,26 @@ let
 
             c_param_ex = if iszero(pcount)
                 map(params) do p
-                    typeassert_expr(Symbol(p.name), c_typemap(parse_type(p.type)...))
+                    T = parse_c_type(p.type)
+                    vname = valid_name(p.name)
+                    isnothing(T) || isnothing(vname) ? nothing : typeassert_expr(vname, T)
                 end
             else
                 Expr[]
             end
-            c_rT = c_typemap(parse_type(rT)...)
+            c_rT = parse_c_type(rT)
+
+            (any(isnothing, c_param_ex) || isnothing(c_rT)) && return nothing
 
             jl_param_ex = if iszero(pcount)
                 map(params) do p
-                    typeassert_expr(Symbol(p.name), jl_typemap(parse_type(p.type)...))
+                    T = parse_jl_type(p.type)
+                    typeassert_expr(Symbol(p.name), T)
                 end
             else
                 Expr[]
             end
-            jl_rT = jlret_typemap(parse_type(rT)...)
+            jl_rT = parse_jl_type(rT)
 
             c_sig = typeassert_expr(
                 Expr(
@@ -307,16 +343,57 @@ let
             end
         end
 
-        return gen_enum, gen_struct, gen_func
+        function gen(f, lib, s, defs, nf = Symbol, depth=1)
+            type = defs[Symbol("$(s)s")]
+            n_entry = Base.parse(Int, type[:attr].count)
+            iszero(n_entry) && return nothing
+
+            postpone = nothing
+            for d = 1:depth
+                entries = isone(d) ? type[s] : postpone
+                postpone = []
+
+                for entry in entries
+                    name = nf(entry[:attr].name)
+
+                    if isdefined(@__MODULE__, name)
+                        @debug "duplicate $name from $lib. skip"
+                        continue
+                    end
+                    expr = f(entry)
+
+                    if isnothing(expr)
+                        @debug "failed to generate $name $s from $lib. skip $d"
+
+                        if s == :Struct
+                            push!(postpone, entry)
+                        end
+                    else
+                        @eval $expr
+
+                        if s == :Struct
+                            c_name = entry[:attr].name
+                            if !haskey(typemap_dict, c_name)
+                                typemap_dict[c_name] = name
+                                @debug "register $c_name => $name"
+                            end
+                        end
+                    end
+                end
+            end
+
+            return nothing
+        end
+
+        return gen_enum, gen_struct, gen_func, gen
     end
 
-    gen_enum, gen_struct, gen_func = builder()
+    gen_enum, gen_struct, gen_func, gen = builder()
 
     apis = map(
         f->joinpath(@__DIR__, "../../api_reference/", f),
         ("raylib_api.xml", "raygui_api.xml",
-         "raymath_api.xml", "physac_api.xml",
-         "easings_api.xml", "rmem_api.xml")
+         "raymath_api.xml", "physac_api.xml")
     )
 
     xmls = Dict(
@@ -331,62 +408,14 @@ let
         lib = split(basename(api), '_')[1]
 
         defs = xml[:raylibAPI]
-        enums = defs[:Enums]
-        n_enum = Base.parse(Int, enums[:attr].count)
-        if !iszero(n_enum)
-            for enum in enums[:Enum]
-                name = Symbol(enum[:attr].name)
-                if isdefined(@__MODULE__, name)
-                    @info "deplicate $name from $lib. skip"
-                    continue
-                end
-                expr = gen_enum(enum)
-                if isnothing(expr)
-                    @info "failed to generate enum: $enum"
-                else
-                    @eval $expr
-                end
-            end
-        end
+        gen(gen_enum, lib, :Enum, defs)
 
-        structs = defs[:Structs]
-        n_struct = Base.parse(Int, structs[:attr].count)
-        if !iszero(n_struct)
-            for cstruct in structs[:Struct]
-                name = Symbol("Ray$(cstruct[:attr].name)")
-                if isdefined(@__MODULE__, name)
-                    @info "duplicate $name from $lib. skip"
-                    continue
-                end
-                expr = gen_struct(cstruct)
-                if isnothing(expr)
-                    @info "failed to generate struct: $cstruct"
-                else
-                    @eval $expr
-                end
-            end
-        end
+        gen(gen_struct, lib, :Struct, defs, s->Symbol("Ray$s"), 2)
 
-        funcs = defs[:Functions]
-        n_func = Base.parse(Int, funcs[:attr].count)
-        if !iszero(n_func)
-            for func in funcs[:Function]
-                name = Symbol(func[:attr].name)
-                if isdefined(@__MODULE__, name)
-                    @info "duplicat $name from $lib. skip"
-                    continue
-                end
-                expr = gen_func(func)
-                if isnothing(expr)
-                    @info "failed to generate function: $func"
-                else
-                    try
-                        @eval $expr
-                    catch
-                        @show lib, expr
-                    end
-                end
-            end
+        if lib == "raylib" || lib == "physac"
+            gen(gen_func, lib, :Function, defs)
+        else
+            gen(Base.Fix2(gen_func, false), lib, :Function, defs)
         end
     end
 
