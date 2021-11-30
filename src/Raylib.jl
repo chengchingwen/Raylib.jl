@@ -12,4 +12,6 @@ using .Binding
 include("core.jl")
 include("shapes.jl")
 
+include("easing.jl")
+
 end
