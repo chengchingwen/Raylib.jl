@@ -6,9 +6,10 @@ CurrentModule = Raylib
 
 Documentation for [Raylib](https://github.com/chengchingwen/Raylib.jl).
 
-```@index
-```
+## Outline
 
-```@autodocs
-Modules = [Raylib]
+```@contents
+Pages = [
+	"bindings.md",
+]
 ```
