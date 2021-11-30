@@ -15,7 +15,6 @@ include("models.jl")
 include("audio.jl")
 
 include("binding/binding.jl")
-include("easing.jl")
 include("raymath.jl")
 
 end
