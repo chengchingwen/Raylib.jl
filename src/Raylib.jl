@@ -5,7 +5,7 @@ using CEnum
 
 include("color.jl")
 
-include("./binding/binding3.jl")
+include("./binding/binding.jl")
 using .Binding
 
 end
