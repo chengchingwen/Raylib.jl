@@ -7,28 +7,44 @@
     * d = total time it should take to complete (duration)
 =#
 
-# Linear Easing functions
+# ###########################
+# # Linear Easing functions #
+# ###########################
+
 EaseLinearNone(t::Real, b::Real, c::Real, d::Real) = c * t/d + b
+
 EaseLinearIn(t::Real, b::Real, c::Real, d::Real) = EaseLinearNone(t, b, c, d)
+
 EaseLinearOut(t::Real, b::Real, c::Real, d::Real) = EaseLinearNone(t, b, c, d)
+
 EaseLinearInOut(t::Real, b::Real, c::Real, d::Real) = EaseLinearNone(t, b, c, d)
 
-# Sine Easing functions
+# #########################
+# # Sine Easing functions #
+# #########################
+
 EaseSineIn(t::Real, b::Real, c::Real, d::Real) = -c * cos(t/d * (π/2)) + c + b
+
 EaseSineOut(t::Real, b::Real, c::Real, d::Real) = c * sinf(t/d * (π/2)) + b
+
 EaseSineInOut(t::Real, b::Real, c::Real, d::Real) = -c/2 * (cos(π * t/d) - 1) + b
 
-# Circular Easing functions
+# #############################
+# # Circular Easing functions #
+# #############################
+
 function EaseCircIn(t::Real, b::Real, c::Real, d::Real)
     t /= d
 
     return -c * (sqrt(1 - t^2) - 1) + b
 end
+
 function EaseCircOut(t::Real, b::Real, c::Real, d::Real)
     t = t/d - 1
 
     return c * sqrt(1 - t^2) + b
 end
+
 function EaseCircInOut(t::Real, b::Real, c::Real, d::Real)
     if (t /= d/2) < 1
         return -c/2 * (sqrt(1 - t^2) - 1) + b
@@ -39,17 +55,22 @@ function EaseCircInOut(t::Real, b::Real, c::Real, d::Real)
     return c/2 * (sqrt(1 - t^2) + 1) + b
 end
 
-# Cubic Easing functions
+# ##########################
+# # Cubic Easing functions #
+# ##########################
+
 function EaseCubicIn(t::Real, b::Real, c::Real, d::Real)
     t /= d
 
     return c * t^3 + b
 end
+
 function EaseCubicOut(t::Real, b::Real, c::Real, d::Real)
     t = t/d - 1
 
     return c * (t^3 + 1) + b
 end
+
 function EaseCubicInOut(t::Real, b::Real, c::Real, d::Real)
     if (t /= d/2) < 1
         return c/2 * t^3 + b
@@ -60,17 +81,22 @@ function EaseCubicInOut(t::Real, b::Real, c::Real, d::Real)
     return c/2 * (t^3 + 2) + b
 end
 
-# Quadratic Easing functions
+# ##############################
+# # Quadratic Easing functions #
+# ##############################
+
 function EaseQuadIn(t::Real, b::Real, c::Real, d::Real)
     t /= d
 
     return c * t^2 + b
 end
+
 function EaseQuadOut(t::Real, b::Real, c::Real, d::Real)
     t /= d
 
     return -c * t * (t - 2) + b
 end
+
 function EaseQuadInOut(t::Real, b::Real, c::Real, d::Real)
     if (t /= d/2) < 1
         return c/2 * t^2 + b
@@ -79,13 +105,18 @@ function EaseQuadInOut(t::Real, b::Real, c::Real, d::Real)
     return -c/2 * ((t - 1) * (t - 3) - 1) + b
 end
 
-# Exponential Easing functions
+# ################################
+# # Exponential Easing functions #
+# ################################
+
 function EaseExpoIn(t::Real, b::Real, c::Real, d::Real)
     return iszero(t) ? b : c * 2^(10(t/d - 1)) + b
 end
+
 function EaseExpoOut(t::Real, b::Real, c::Real, d::Real)
     return iszero(t-d) ? b+c : c * (-(2.0^(-10 * t/d)) + 1) + b
 end
+
 function EaseExpoInOut(t::Real, b::Real, c::Real, d::Real)
     if iszero(t)
         return b
@@ -98,19 +129,24 @@ function EaseExpoInOut(t::Real, b::Real, c::Real, d::Real)
     end
 end
 
-# Back Easing functions
+# #########################
+# # Back Easing functions #
+# #########################
+
 function EaseBackIn(t::Real, b::Real, c::Real, d::Real)
     s = 1.70158
     postFix = t/=d
 
     return c * postFix * t * ((s + 1) * t - s) + b
 end
+
 function EaseBackOut(t::Real, b::Real, c::Real, d::Real)
     s = 1.70158
     t = t/d - 1
 
     return c * (t^2 * ((s + 1) * t + s) + 1) + b
 end
+
 function EaseBackInOut(t::Real, b::Real, c::Real, d::Real)
     s = 1.70158
 
@@ -125,10 +161,14 @@ function EaseBackInOut(t::Real, b::Real, c::Real, d::Real)
     return c/2 * (postFix * t * ((s + 1) * t + s) + 2) + b
 end
 
-# Bounce Easing functions
+# ###########################
+# # Bounce Easing functions #
+# ###########################
+
 function EaseBounceIn(t::Real, b::Real, c::Real, d::Real)
     return c - EaseBounceOut(d-t, 0, c, d) + b
 end
+
 function EaseBounceOut(t::Real, b::Real, c::Real, d::Real)
     if (t /= d) < 1/2.75
         return c * (7.5625 * t^2) + b
@@ -143,6 +183,7 @@ function EaseBounceOut(t::Real, b::Real, c::Real, d::Real)
         return c * (7.5625postFix * t + 0.984375) + b
     end
 end
+
 function EaseBounceInOut(t::Real, b::Real, c::Real, d::Real)
     if (t < d/2)
         return EaseBounceIn(2t, 0, c, d)/2 + b
@@ -151,7 +192,10 @@ function EaseBounceInOut(t::Real, b::Real, c::Real, d::Real)
     return EaseBounceOut(2t-d, 0, c, d)/2 + c/2 + b
 end
 
-# Elastic Easing functions
+# ############################
+# # Elastic Easing functions #
+# ############################
+
 function EaseElasticIn(t::Real, b::Real, c::Real, d::Real)
     iszero(t) && (return b)
     isone(t/=d) && (return b + c)
@@ -163,6 +207,7 @@ function EaseElasticIn(t::Real, b::Real, c::Real, d::Real)
 
     return -(postFix * sin((t * d - s) * 2π/p )) + b
 end
+
 function EaseElasticOut(t::Real, b::Real, c::Real, d::Real)
     iszero(t) && (return b)
     isone(t /= d) && (return b + c)
@@ -173,6 +218,7 @@ function EaseElasticOut(t::Real, b::Real, c::Real, d::Real)
 
     return a * 2^(-10t) * sin((t * d - s) * 2π/p) + c + b
 end
+
 function EaseElasticInOut(t::Real, b::Real, c::Real, d::Real)
     iszero(t) && (return b)
     ((t /= d/2) == 2) && (return b + c)
