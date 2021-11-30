@@ -223,7 +223,8 @@ end
 
 function EaseElasticInOut(t::Real, b::Real, c::Real, d::Real)
     (t ≈ 0) && (return b)
-    ((t /= d/2) ≈ 2) && (return b + c)
+    (t ≈ d) && (return b + c)
+    t = 2t/d
 
     p = d * 0.3 * 1.5
     a = c
