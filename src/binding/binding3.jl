@@ -2,14 +2,9 @@ module Binding
 
 using CEnum
 
-# using ..Raylib: RayVector2, RayVector3, RayVector4, RayMatrix,
-#     RayColor, RayCamera, RayCamera2D, RayCamera3D,
-#     RayTexture, RayTexture2D, RayTextureCubemap,
-#     RayRenderTexture, RayRenderTexture2D,
-#     RayMaterial, RayBoneInfo
-using ..Raylib: RayColor
+import ..Raylib: RayColor
 
-include("./enum.jl")
+include("../enum.jl")
 include("../struct.jl")
 
 let
@@ -419,6 +414,12 @@ let
         end
     end
 
+end
+
+let allsym = filter(names(@__MODULE__; all=true, imported=true)) do sym
+      Base.isidentifier(sym) && sym ∉ (Symbol(@__MODULE__), :include, :eval)
+    end
+    @eval export $(allsym...)
 end
 
 end

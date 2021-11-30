@@ -366,3 +366,7 @@ end
     NPATCH_THREE_PATCH_HORIZONTAL  # Npatch layout: 3x1 tiles
 end
 
+@cenum PhysicsShapeType begin
+    PHYSICS_CIRCLE = 0
+    PHYSICS_POLYGON
+end
