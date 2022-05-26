@@ -17,7 +17,8 @@ function main()
 
         if Raylib.IsGamepadAvailable(0)
 
-            Raylib.DrawText("GP1: $(Raylib.GetGamepadName(0))", 10, 10, 10, Raylib.BLACK)
+            gamepad_name = unsafe_string(Raylib.GetGamepadName(0))
+            Raylib.DrawText("GP1: $(gamepad_name)", 10, 10, 10, Raylib.BLACK)
 
             Raylib.DrawText("- GENERIC GAMEPAD -", 280, 180, 20, Raylib.GRAY)
 
