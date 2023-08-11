@@ -57,9 +57,23 @@ end
 Base.length(fdata::RayFileData) = length(fdata.data)
 Base.pointer(fdata::RayFileData) = pointer(fdata.data)
 
-
+#Convert KeyPressed Enums to Int
 for func in :(
     IsKeyDown, IsKeyPressed, IsKeyReleased, IsKeyUp
 ).args
     @eval Binding.$func(k::KeyboardKey) = $func(convert(Integer, k))
+end
+
+#Convert MouseButton Enums to Int
+for func in :(
+    IsMouseButtonDown, IsMouseButtonPressed, IsMouseButtonReleased, IsMouseButtonUp
+).args
+    @eval Binding.$func(m::MouseButton) = $func(convert(Integer, m))
+end
+
+#Convert MouseCursor Enums to Int
+for func in :(
+    SetMouseCursor
+).args
+    @eval Binding.$func(c::MouseCursor) = $func(convert(Integer, c))
 end
