@@ -73,7 +73,7 @@ end
 
 #Convert MouseCursor Enums to Int
 for func in :(
-    SetMouseCursor
+    SetMouseCursor,
 ).args
     @eval Binding.$func(c::MouseCursor) = $func(convert(Integer, c))
 end
